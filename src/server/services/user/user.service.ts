@@ -72,7 +72,7 @@ export class UserService {
 		return this.users.find((user) => user.gameId === gameId);
 	}
 
-	addUserToGame(userId: string, gameId: string, isHost = false) {
+	addUserToGame(userId: string, gameId: string, isHost = false): User | undefined {
 		const user = this.getUserById(userId);
 		if (!user) {
 			return;
@@ -101,6 +101,8 @@ export class UserService {
 				players: [...players, { name: user.name, id: user.id, connected: user.connected }],
 			});
 		}
+
+		return this.getUserById(user.id);
 	}
 
 	removeUserFromGame(userId: string, gameId: string | undefined) {

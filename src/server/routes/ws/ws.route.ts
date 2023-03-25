@@ -31,6 +31,12 @@ function handleOnWsMessage(ws: ws, req: express.Request, getWss: () => ws.Server
 			break;
 		case WsMessageType.JoinGame:
 			userService.addUserToGame(user.id, message.data.gameName);
+			ws.send(
+				JSON.stringify({
+					type: WsMessageType.User,
+					data: userService.getUserById(user.id),
+				})
+			);
 			break;
 		case WsMessageType.BuzzerOnOff:
 			broadcastMessage(
@@ -86,11 +92,6 @@ function handleOnWsClose(req: express.Request, getWss: () => ws.Server) {
 		return;
 	}
 	userService.disconnectUser(user);
-	const response = {
-		type: WsMessageType.User,
-		data: userService.getAllUsers(),
-	};
-	broadcastMessage(response, getWss);
 
 	console.log('disconnect', user.name);
 	const host = userService.getGameHost(user?.gameId);

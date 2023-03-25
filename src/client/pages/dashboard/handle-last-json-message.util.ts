@@ -11,6 +11,11 @@ export const handleLastJsonMessageUtil = (message: IWsMessage, dispatch: Dispatc
 					dispatch(setUser(message.data));
 				}
 				break;
+			case WsMessageType.User:
+				if (message.data) {
+					dispatch(setUser(message.data));
+				}
+				break;
 			case WsMessageType.ForHost:
 				if (message.data) {
 					dispatch(setHost(message.data));
