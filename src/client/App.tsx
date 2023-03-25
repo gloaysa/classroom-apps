@@ -4,6 +4,7 @@ import { useSelector } from 'react-redux';
 import { selectUser } from './store/reducers/user.reducer';
 import { Outlet, useNavigate } from 'react-router-dom';
 import { Container } from '@mui/material';
+import { MainRoutes } from './index.router';
 
 const App: FunctionComponent = () => {
 	const navigate = useNavigate();
@@ -11,9 +12,7 @@ const App: FunctionComponent = () => {
 
 	useEffect(() => {
 		if (!currentUser) {
-			navigate('/login');
-		} else {
-			navigate('/dashboard');
+			navigate(MainRoutes.Login);
 		}
 	}, []);
 

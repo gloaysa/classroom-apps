@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { selectUser } from '../../store/reducers/user.reducer';
 import useWebSocket from 'react-use-websocket';
 import { handleLastJsonMessageUtil } from './handle-last-json-message.util';
+import { Outlet } from 'react-router-dom';
 
 const WS_URL = 'ws://127.0.0.1:8050';
 const DashboardPage = () => {
@@ -21,7 +22,12 @@ const DashboardPage = () => {
 		handleLastJsonMessageUtil(lastJsonMessage, dispatch);
 	}, [lastJsonMessage]);
 
-	return <div>dashboard</div>;
+	return (
+		<div>
+			<h1>dashboard</h1>
+			<Outlet />
+		</div>
+	);
 };
 
 export default DashboardPage;

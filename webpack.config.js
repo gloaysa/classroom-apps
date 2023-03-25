@@ -11,6 +11,7 @@ module.exports = {
 	output: {
 		path: path.join(__dirname, outputDirectory),
 		filename: './js/[name].bundle.js',
+		publicPath: '/',
 	},
 	devtool: 'source-map',
 	module: {
@@ -44,6 +45,7 @@ module.exports = {
 		port: 3000,
 		open: true,
 		hot: true,
+		historyApiFallback: true,
 		proxy: {
 			'/api/**': {
 				target: 'http://localhost:8050',

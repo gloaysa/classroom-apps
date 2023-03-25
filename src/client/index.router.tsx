@@ -2,11 +2,16 @@ import { createBrowserRouter } from 'react-router-dom';
 import App from './App';
 import LoginPage from './pages/login/login.page';
 import React from 'react';
-import DashboardPage from './pages/dashboard/dashboard.page';
+import { DashboardRouter } from './pages/dashboard/dashboard.router';
+
+export enum MainRoutes {
+	Home = '/',
+	Login = '/login',
+}
 
 const router = createBrowserRouter([
 	{
-		path: '/',
+		path: MainRoutes.Home,
 		element: <App />,
 		errorElement: <div>Page not found</div>,
 		children: [
@@ -15,13 +20,10 @@ const router = createBrowserRouter([
 				children: [
 					{ index: true, element: <App /> },
 					{
-						path: 'login',
+						path: MainRoutes.Login,
 						element: <LoginPage />,
 					},
-					{
-						path: '/dashboard',
-						element: <DashboardPage />,
-					},
+					DashboardRouter,
 				],
 			},
 		],

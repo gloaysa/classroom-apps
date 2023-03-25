@@ -1,15 +1,24 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Avatar, Box, Button, Container, CssBaseline, TextField, Typography } from '@mui/material';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { setUser } from '../../store/reducers/user.reducer';
+import { selectUser, setUser } from '../../store/reducers/user.reducer';
 import { v4 as uuidv4 } from 'uuid';
+import { DashboardRoutes } from '../dashboard/dashboard.router';
 
 const LoginPage = () => {
 	const [username, setUsername] = useState('');
+	const currentUser = useSelector(selectUser);
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
+
+	useEffect(() => {
+		if (currentUser) {
+			navigate(DashboardRoutes.Dashboard);
+		}
+	}, [currentUser]);
+
 	const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
 		const data = new FormData(event.currentTarget);
@@ -20,7 +29,6 @@ const LoginPage = () => {
 				name: user,
 			};
 			dispatch(setUser(newUser));
-			navigate('/dashboard');
 		}
 	};
 
