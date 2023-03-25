@@ -31,7 +31,7 @@ app.use(function (req, res, next) {
 	const userFromQuery = req.query.user as string;
 	if (!userFromQuery || userFromQuery === 'undefined') {
 		console.error('No user when establishing connection');
-		return res.status(403).send('No user in query');
+		res.status(403).send('No user in query');
 	}
 	return next();
 });
