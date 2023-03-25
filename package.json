@@ -5,11 +5,10 @@
 	"main": "server/index.js",
 	"private": true,
 	"scripts": {
-		"build": "webpack --mode production",
-		"start": "npm run build && npm run server",
-		"client": "webpack-dev-server --mode development --devtool inline-source-map --hot",
+		"build": "webpack --mode production && tsc -p tsconfig.server.json",
 		"serve": "node dist/server/",
 		"dev": "concurrently \"nodemon\" \"npm run client\"",
+		"client": "webpack-dev-server --mode development --devtool inline-source-map --hot",
 		"server-dev": "nodemon",
 		"prepare": "husky install"
 	},
