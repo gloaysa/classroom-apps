@@ -39,6 +39,9 @@ function handleOnWsMessage(ws: ws, req: express.Request, getWss: () => ws.Server
 			);
 			break;
 		case WsMessageType.BuzzerOnOff:
+			if (message.data?.state) {
+				userService.resetBuzzed(user.gameId);
+			}
 			broadcastMessage(
 				{
 					type: WsMessageType.BuzzerOnOff,
@@ -46,6 +49,9 @@ function handleOnWsMessage(ws: ws, req: express.Request, getWss: () => ws.Server
 				},
 				getWss
 			);
+			break;
+		case WsMessageType.Buzzed:
+			userService.userBuzzed(user.id, user.gameId, true);
 			break;
 	}
 

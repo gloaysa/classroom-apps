@@ -1,4 +1,4 @@
-import { User } from '../../../common';
+import { Player, User } from '../../../common';
 
 export class UserService {
 	private static instance: UserService;
@@ -118,5 +118,50 @@ export class UserService {
 			...host,
 			players,
 		});
+	}
+
+	resetBuzzed(gameId: string | undefined): User | undefined {
+		const host = this.getGameHost(gameId);
+		if (!host) {
+			return;
+		}
+		const players = host?.players?.map((user) => {
+			return { ...user, buzzed: '' };
+		});
+		const updatedHost = {
+			...host,
+			players,
+		};
+		this.updateUser(updatedHost);
+
+		return updatedHost;
+	}
+
+	userBuzzed(userId: string, gameId: string | undefined, buzzed: boolean): User | undefined {
+		const sortByDate = (first: Player, second: Player) => {
+			const firstDate = first.buzzed ?? '';
+			const secondDate = second.buzzed ?? '';
+			return new Date(firstDate).getTime() - new Date(secondDate).getTime();
+		};
+
+		const host = this.getGameHost(gameId);
+		if (!host) {
+			return;
+		}
+		const players = host?.players
+			?.map((user) => {
+				if (user.id === userId) {
+					return { ...user, buzzed: buzzed ? new Date().toISOString() : '' };
+				}
+				return user;
+			})
+			.sort(sortByDate);
+		const updatedHost = {
+			...host,
+			players,
+		};
+		this.updateUser(updatedHost);
+
+		return updatedHost;
 	}
 }

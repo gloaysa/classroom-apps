@@ -5,6 +5,7 @@ export enum WsMessageType {
 	JoinGame = 'join game',
 	ForHost = 'for host',
 	BuzzerOnOff = 'switch buzzers',
+	Buzzed = 'user buzzed',
 }
 export interface IWsMessage {
 	[key: string]: any | undefined;

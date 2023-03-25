@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { RootState } from '../store';
-import { User } from '../../../common';
+import { Player, User } from '../../../common';
 
 // Define a type for the slice state
 interface ConfigState {
@@ -32,7 +32,7 @@ export const userSlice = createSlice({
 
 export const { setUser, setHost, cleanState } = userSlice.actions;
 
-export const selectUserList = (state: RootState): User[] => state.user.user.players ?? [];
+export const selectPlayerList = (state: RootState): Player[] => state.user.user.players ?? [];
 export const selectUser = (state: RootState): User | undefined => state.user.user;
 
 export default userSlice.reducer;

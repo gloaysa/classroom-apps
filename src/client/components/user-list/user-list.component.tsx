@@ -1,15 +1,17 @@
 import React, { FunctionComponent } from 'react';
+import './user-list.component.scss';
 import { useSelector } from 'react-redux';
-import { selectUserList } from '../../store/reducers/user.reducer';
+import { selectPlayerList } from '../../store/reducers/user.reducer';
 
 const UserListComponent: FunctionComponent = () => {
-	const userList = useSelector(selectUserList);
+	const players = useSelector(selectPlayerList);
 
 	return (
 		<div className="user-list">
-			{userList.map((user) => (
-				<div key={user.id} className="user-list__user">
-					{user.name}
+			{players.map((player, index) => (
+				<div key={player.id} className="user-list__user">
+					<div className="user-list__user-number">{index + 1}</div>
+					<div className={'user-list__user-name ' + (player.buzzed ? 'user-list__user--buzzed' : 'user-list__user--no-buzzed')}>{player.name}</div>
 				</div>
 			))}
 		</div>

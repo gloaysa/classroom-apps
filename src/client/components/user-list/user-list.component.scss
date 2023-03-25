@@ -1,0 +1,25 @@
+.user-list {
+	display: flex;
+	flex-direction: column;
+
+	.user-list__user {
+		display: flex;
+		width: 100%;
+
+		&-number {
+			margin-right: 15px;
+		}
+
+		&-name {
+			width: 100%;
+		}
+
+		&--buzzed {
+			background-color: green;
+		}
+
+		&--no-buzzed {
+			background-color: red;
+		}
+	}
+}

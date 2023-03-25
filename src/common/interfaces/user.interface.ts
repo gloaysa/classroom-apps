@@ -5,9 +5,12 @@ export interface User {
 	gameId?: string;
 	connected?: boolean;
 
-	players?: {
-		id: string;
-		name: string;
-		connected?: boolean;
-	}[];
+	players?: Player[];
+}
+
+export interface Player {
+	id: string;
+	name: string;
+	connected?: boolean;
+	buzzed?: string;
 }

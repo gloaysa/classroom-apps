@@ -33,6 +33,11 @@ const BuzzerGame = () => {
 	const handleClickBuzzer = () => {
 		if (buzzerOn && buzzerState !== 'buzzed') {
 			setBuzzerState('buzzed');
+			const message: IWsMessage = {
+				type: WsMessageType.Buzzed,
+				data: true,
+			};
+			sendJsonMessage(message);
 		}
 	};
 
