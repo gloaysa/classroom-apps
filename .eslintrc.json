@@ -13,6 +13,7 @@
 		"ecmaVersion": 12,
 		"sourceType": "module"
 	},
+	"ignorePatterns": ["**/*.js"],
 	"plugins": ["react", "@typescript-eslint"],
 	"rules": {
 		"comma-dangle": "off"

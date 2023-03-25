@@ -3,5 +3,5 @@ export enum WsMessageType {
 }
 export interface WsMessageInterface {
 	type: WsMessageType;
-	data: Record<any, any>;
+	data: any;
 }

@@ -48,8 +48,8 @@
 		]
 	},
 	"workspaces": [
-		"client",
+		"common",
 		"server",
-		"common"
+		"client"
 	]
 }

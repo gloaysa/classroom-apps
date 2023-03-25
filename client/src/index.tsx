@@ -1,39 +1,13 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import './index.css';
-import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { Provider } from 'react-redux';
 import store, { persistedStore } from './store/store';
-import { createBrowserRouter, RouterProvider } from 'react-router-dom';
-import UserListComponent from './components/user-list/user-list.component';
+import { RouterProvider } from 'react-router-dom';
 import { PersistGate } from 'redux-persist/integration/react';
 import SpinnerComponent from './components/spinner/spinner.component';
-import LoginPage from './pages/login/login.page';
-
-const router = createBrowserRouter([
-	{
-		path: '/',
-		element: <App />,
-		errorElement: <div>Page not found</div>,
-		children: [
-			{
-				errorElement: <div>Page not found</div>,
-				children: [
-					{ index: true, element: <App /> },
-					{
-						path: 'login',
-						element: <LoginPage />,
-					},
-					{
-						path: '/',
-						element: <UserListComponent />,
-					},
-				],
-			},
-		],
-	},
-]);
+import router from './index.router';
 
 const root = createRoot(document.getElementById('root') as HTMLElement);
 

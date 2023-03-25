@@ -1,4 +1,4 @@
-import { User } from 'common/interfaces/user.interface';
+import { User } from '@classroom-apps/common';
 
 export class UserService {
 	private static instance: UserService;
