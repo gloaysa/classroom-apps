@@ -1,13 +1,19 @@
-import { updateUserList } from '../../store/reducers/user.reducer';
 import { Dispatch } from '@reduxjs/toolkit';
-import { WsMessageInterface, WsMessageType } from '../../../common';
+import { IWsMessage, WsMessageType } from '../../../common';
+import { setHost, setUser } from '../../store/reducers/user.reducer';
 
-export const handleLastJsonMessageUtil = (message: WsMessageInterface, dispatch: Dispatch) => {
+export const handleLastJsonMessageUtil = (message: IWsMessage, dispatch: Dispatch) => {
 	if (message !== null) {
-		console.log(message);
 		switch (message.type) {
-			case WsMessageType.User:
-				dispatch(updateUserList(message.data));
+			case WsMessageType.NewUser:
+				if (message.data) {
+					dispatch(setUser(message.data));
+				}
+				break;
+			case WsMessageType.ForHost:
+				if (message.data) {
+					dispatch(setHost(message.data));
+				}
 		}
 	}
 };

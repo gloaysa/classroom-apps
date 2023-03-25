@@ -6,15 +6,23 @@ import { useNavigate } from 'react-router-dom';
 import { selectUser, setUser } from '../../store/reducers/user.reducer';
 import { v4 as uuidv4 } from 'uuid';
 import { DashboardRoutes } from '../dashboard/dashboard.router';
+import { useLocalStorage } from 'usehooks-ts';
+import { User } from '../../../common';
 
 const LoginPage = () => {
+	const [userLocalStorage, setUserLocalStorage] = useLocalStorage<User | undefined>('user', undefined);
 	const [username, setUsername] = useState('');
 	const currentUser = useSelector(selectUser);
+
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
 
 	useEffect(() => {
 		if (currentUser) {
+			navigate(DashboardRoutes.Dashboard);
+		}
+		if (userLocalStorage) {
+			dispatch(setUser(userLocalStorage));
 			navigate(DashboardRoutes.Dashboard);
 		}
 	}, [currentUser]);
@@ -28,6 +36,7 @@ const LoginPage = () => {
 				id: uuidv4(),
 				name: user,
 			};
+			setUserLocalStorage(newUser);
 			dispatch(setUser(newUser));
 		}
 	};

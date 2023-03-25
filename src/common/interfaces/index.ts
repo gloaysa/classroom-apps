@@ -1,2 +1,2 @@
 export * from './user.interface';
-export * from './ws-message.interface';
+export * from './i-ws.message';

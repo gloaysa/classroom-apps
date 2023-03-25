@@ -1,30 +1,41 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { selectUser } from '../../store/reducers/user.reducer';
-import useWebSocket from 'react-use-websocket';
+import { cleanState, selectUser } from '../../store/reducers/user.reducer';
 import { handleLastJsonMessageUtil } from './handle-last-json-message.util';
-import { Outlet } from 'react-router-dom';
+import { Outlet, useNavigate } from 'react-router-dom';
+import { useSocketHook } from '../../hooks/use-socket.hook';
+import { Button } from '@mui/material';
+import { useLocalStorage } from 'usehooks-ts';
+import { User } from '../../../common';
+import { MainRoutes } from '../../index.router';
+import { DashboardRoutes } from './dashboard.router';
 
-const WS_URL = 'ws://127.0.0.1:8050';
 const DashboardPage = () => {
+	const [userLocalStorage, setUserLocalStorage] = useLocalStorage<User | undefined>('user', undefined);
 	const dispatch = useDispatch();
+	const navigate = useNavigate();
 	const currentUser = useSelector(selectUser);
-	const { lastJsonMessage } = useWebSocket<any>(WS_URL, {
-		onOpen: (event) => {
-			console.info('WebSocket connection established.', event);
-		},
-		queryParams: {
-			user: JSON.stringify(currentUser),
-		},
-	});
+	const { lastJsonMessage } = useSocketHook(currentUser);
 
 	useEffect(() => {
 		handleLastJsonMessageUtil(lastJsonMessage, dispatch);
 	}, [lastJsonMessage]);
 
+	const handleLogout = () => {
+		dispatch(cleanState());
+		setUserLocalStorage(undefined);
+		navigate(MainRoutes.Login);
+	};
+
+	const handleGoToHost = () => {
+		navigate(DashboardRoutes.Host);
+	};
+
 	return (
 		<div>
 			<h1>dashboard</h1>
+			<Button onClick={handleLogout}>Logout</Button>
+			<Button onClick={handleGoToHost}>Host</Button>
 			<Outlet />
 		</div>
 	);
