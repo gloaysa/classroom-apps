@@ -1,6 +1,7 @@
 import { Dispatch } from '@reduxjs/toolkit';
 import { IWsMessage, WsMessageType } from '../../../common';
 import { setHost, setUser } from '../../store/reducers/user.reducer';
+import { setBuzzerOnOff } from '../../store/reducers/config.reducer';
 
 export const handleLastJsonMessageUtil = (message: IWsMessage, dispatch: Dispatch) => {
 	if (message !== null) {
@@ -14,6 +15,9 @@ export const handleLastJsonMessageUtil = (message: IWsMessage, dispatch: Dispatc
 				if (message.data) {
 					dispatch(setHost(message.data));
 				}
+				break;
+			case WsMessageType.BuzzerOnOff:
+				dispatch(setBuzzerOnOff(message.data));
 		}
 	}
 };

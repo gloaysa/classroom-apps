@@ -1,6 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Container, CssBaseline } from '@mui/material';
+import { Container, CssBaseline, FormControlLabel, Switch } from '@mui/material';
 import SportsEsportsIcon from '@mui/icons-material/SportsEsports';
 import { useSocketHook } from '../../../hooks/use-socket.hook';
 import { useDispatch, useSelector } from 'react-redux';
@@ -29,12 +29,24 @@ const BuzzerHostGame = () => {
 		}
 	};
 
+	const handleBuzzers = (event: React.ChangeEvent<HTMLInputElement>) => {
+		const message: IWsMessage = {
+			type: WsMessageType.BuzzerOnOff,
+			data: {
+				state: event.target.checked,
+			},
+		};
+		sendJsonMessage(message);
+	};
+
 	return (
 		<Container>
 			<CssBaseline />
-
 			{currentUser?.gameId ? (
-				<UserListComponent />
+				<Container>
+					<FormControlLabel control={<Switch defaultChecked={false} onChange={handleBuzzers} />} label="Buzzers are..." />
+					<UserListComponent />
+				</Container>
 			) : (
 				<MainInputComponent
 					title="Name your game"

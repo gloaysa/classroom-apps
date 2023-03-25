@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Container, CssBaseline } from '@mui/material';
 import MainInputComponent from '../../components/main-input/main-input.component';
 import SportsEsportsIcon from '@mui/icons-material/SportsEsports';
@@ -7,10 +7,16 @@ import { selectUser } from '../../store/reducers/user.reducer';
 import { IWsMessage, WsMessageType } from '../../../common';
 import { useSocketHook } from '../../hooks/use-socket.hook';
 import BuzzerComponent, { BuzzerState } from '../../components/buzzer/buzzer.component';
+import { selectBuzzerOnOff } from '../../store/reducers/config.reducer';
 
 const BuzzerGame = () => {
-	const [buzzerActive, setBuzerActive] = useState<BuzzerState>('waiting');
+	const [buzzerState, setBuzzerState] = useState<BuzzerState>('waiting');
 	const currentUser = useSelector(selectUser);
+	const buzzerOn = useSelector(selectBuzzerOnOff);
+
+	useEffect(() => {
+		setBuzzerState(buzzerOn ? 'ready' : 'waiting');
+	}, [buzzerOn]);
 
 	const { sendJsonMessage } = useSocketHook(currentUser);
 
@@ -25,7 +31,9 @@ const BuzzerGame = () => {
 	};
 
 	const handleClickBuzzer = () => {
-		setBuzerActive('pulsed');
+		if (buzzerOn && buzzerState !== 'buzzed') {
+			setBuzzerState('buzzed');
+		}
 	};
 
 	return (
@@ -33,7 +41,7 @@ const BuzzerGame = () => {
 			<CssBaseline />
 
 			{currentUser?.gameId ? (
-				<BuzzerComponent onClick={handleClickBuzzer} state={buzzerActive} />
+				<BuzzerComponent onClick={handleClickBuzzer} state={buzzerState} />
 			) : (
 				<MainInputComponent
 					title="Ask your teacher for the name"

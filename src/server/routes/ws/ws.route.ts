@@ -25,12 +25,24 @@ function handleOnWsMessage(ws: ws, req: express.Request, getWss: () => ws.Server
 
 	const message: IWsMessage = JSON.parse(msg);
 	console.log(message);
-	if (message.type === WsMessageType.NewGame) {
-		userService.addUserToGame(user.id, message.data.gameName, true);
+	switch (message.type) {
+		case WsMessageType.NewGame:
+			userService.addUserToGame(user.id, message.data.gameName, true);
+			break;
+		case WsMessageType.JoinGame:
+			userService.addUserToGame(user.id, message.data.gameName);
+			break;
+		case WsMessageType.BuzzerOnOff:
+			broadcastMessage(
+				{
+					type: WsMessageType.BuzzerOnOff,
+					data: message.data.state,
+				},
+				getWss
+			);
+			break;
 	}
-	if (message.type === WsMessageType.JoinGame) {
-		userService.addUserToGame(user.id, message.data.gameName);
-	}
+
 	const connectedUser = userService.getUserById(user.id);
 	const host = userService.getGameHost(connectedUser?.gameId);
 	const response = {

@@ -3,26 +3,26 @@ import { RootState } from '../store';
 
 // Define a type for the slice state
 interface ConfigState {
-	main: string;
+	buzzerOn: boolean;
 }
 
 // Define the initial state using that type
 const initialState: ConfigState = {
-	main: '',
+	buzzerOn: false,
 };
 
 export const configSlice = createSlice({
 	name: 'config',
 	initialState,
 	reducers: {
-		setMainConfig: (state, action: PayloadAction<string>) => {
-			state.main = action.payload;
+		setBuzzerOnOff: (state, action: PayloadAction<boolean>) => {
+			state.buzzerOn = action.payload;
 		},
 	},
 });
 
-export const { setMainConfig } = configSlice.actions;
+export const { setBuzzerOnOff } = configSlice.actions;
 
-export const selectMainConfig = (state: RootState): string => state.config.main;
+export const selectBuzzerOnOff = (state: RootState): string => state.config.buzzerOn;
 
 export default configSlice.reducer;

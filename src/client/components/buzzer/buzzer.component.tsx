@@ -1,7 +1,7 @@
 import React, { FunctionComponent } from 'react';
 import './buzzer.component.scss';
 
-export type BuzzerState = 'waiting' | 'ready' | 'pulsed';
+export type BuzzerState = 'waiting' | 'ready' | 'buzzed';
 
 interface IBuzzerComponent {
 	onClick: () => void;
@@ -12,7 +12,7 @@ const BuzzerComponent: FunctionComponent<IBuzzerComponent> = ({ onClick, state }
 	const colors = {
 		waiting: 'grey',
 		ready: 'green',
-		pulsed: 'red',
+		buzzed: 'red',
 	};
 	return (
 		<div className="buzzer" onClick={onClick} style={{ backgroundColor: colors[state] }}>
