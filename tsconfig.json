@@ -6,13 +6,14 @@
 		"forceConsistentCasingInFileNames": true,
 		"moduleResolution": "node",
 		"allowSyntheticDefaultImports": true,
-		"target": "es6",
+		"target": "es2019",
 		"jsx": "react",
 		"module": "commonjs",
 		"sourceMap": true,
-		"outDir": "./build",
+		"outDir": "./dist/",
 		"skipLibCheck": true,
-		"lib": ["dom", "dom.iterable", "esnext"],
-		"allowJs": true
+		"lib": ["DOM"]
 	},
+	"exclude": ["./src/server "],
+	"include": ["./src/client/*", "./src/client/types/**/*.d.ts"]
 }

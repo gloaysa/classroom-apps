@@ -1,0 +1,20 @@
+{
+	"compilerOptions": {
+		"module": "commonjs",
+		"esModuleInterop": true,
+		"target": "es6",
+		"resolveJsonModule": true,
+		"noImplicitAny": true,
+		"moduleResolution": "node",
+		"skipLibCheck": true,
+		"sourceMap": true,
+		"outDir": "./dist",
+		"baseUrl": ".",
+		"paths": {
+			"*": ["node_modules/*"]
+		}
+	},
+	"compileOnSave": true,
+	"exclude": ["./src/client"],
+	"include": ["./src/server"]
+}
