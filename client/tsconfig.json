@@ -1,0 +1,22 @@
+{
+	"compilerOptions": {
+		"module": "esnext",
+		"esModuleInterop": true,
+		"target": "es6",
+		"resolveJsonModule": true,
+		"noImplicitAny": true,
+		"moduleResolution": "node",
+		"sourceMap": true,
+		"outDir": "../build",
+		"lib": ["dom", "dom.iterable", "esnext"],
+		"allowJs": true,
+		"skipLibCheck": true,
+		"allowSyntheticDefaultImports": true,
+		"strict": true,
+		"forceConsistentCasingInFileNames": true,
+		"isolatedModules": true,
+		"noEmit": true,
+		"jsx": "preserve"
+	},
+	"include": ["**/**/*.ts"]
+}

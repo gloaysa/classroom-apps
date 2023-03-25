@@ -1,0 +1,8 @@
+$cell-size-phone: 25px;
+$cell-size-tablet: 50px;
+
+$letter-size-phone: calc($cell-size-phone / 2);
+$letter-size-tablet: calc($cell-size-tablet / 2);
+
+$line-size-phone: calc($letter-size-phone * 2.5);
+$line-size-tablet: calc($letter-size-tablet * 2.5);

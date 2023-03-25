@@ -1,0 +1,31 @@
+@import '../../styles/colors.scss';
+
+.spinner {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+
+	background-color: rgba(0, 0, 0, 0.1);
+	z-index: 999;
+
+	&__icon {
+		color: $color-primary-dark;
+		animation: spin 1s infinite linear;
+		font-size: 50px;
+
+		@keyframes spin {
+			from {
+				transform: scale(1) rotate(0deg);
+			}
+			to {
+				transform: scale(1) rotate(360deg);
+			}
+		}
+	}
+}

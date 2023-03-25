@@ -1,0 +1,55 @@
+{
+	"name": "classroom-apps",
+	"version": "2.0.1",
+	"description": "Collection of apps and games to be used in the classroom",
+	"main": "build/index.js",
+	"private": true,
+	"scripts": {
+		"start": "npm run start -ws --if-present",
+		"build": "npm run build -ws --if-present",
+		"serve": "node build/index.js"
+	},
+	"author": "Guillermo Loaysa",
+	"license": "ISC",
+	"dependencies": {
+		"@emotion/react": "^11.10.6",
+		"@emotion/styled": "^11.10.6",
+		"@mui/material": "^5.11.14",
+		"uuid": "^9.0.0"
+	},
+	"devDependencies": {
+		"@types/jest": "^27.5.2",
+		"@types/node": "^16.18.12",
+		"husky": "^8.0.3",
+		"lint-staged": "^13.2.0",
+		"prettier": "^2.8.4",
+		"pretty-quick": "^3.1.3",
+		"typescript": "latest"
+	},
+	"eslintConfig": {
+		"extends": [
+			"react-app",
+			"react-app/jest"
+		]
+	},
+	"nodemonConfig": {
+		"ext": "js, ts, json"
+	},
+	"browserslist": {
+		"production": [
+			">0.2%",
+			"not dead",
+			"not op_mini all"
+		],
+		"development": [
+			"last 1 chrome version",
+			"last 1 firefox version",
+			"last 1 safari version"
+		]
+	},
+	"workspaces": [
+		"client",
+		"server",
+		"common"
+	]
+}
