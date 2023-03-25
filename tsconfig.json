@@ -10,10 +10,9 @@
 		"jsx": "react",
 		"module": "commonjs",
 		"sourceMap": true,
+		"outDir": "./build",
 		"skipLibCheck": true,
 		"lib": ["dom", "dom.iterable", "esnext"],
 		"allowJs": true
 	},
-	"exclude": ["./server "],
-	"include": ["./client/*", "./client/types/**/*.d.ts"]
 }

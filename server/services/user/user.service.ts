@@ -1,4 +1,4 @@
-import { User } from '@classroom-apps/common';
+import { User } from '../../../build/common';
 
 export class UserService {
 	private static instance: UserService;

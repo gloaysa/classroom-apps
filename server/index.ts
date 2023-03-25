@@ -7,7 +7,7 @@ import * as path from 'path';
 import connectToDB from './db';
 import { WebSocket } from 'ws';
 import { UserService } from './services/user/user.service';
-import { User, WsMessageInterface, WsMessageType } from '@classroom-apps/common';
+import { User, WsMessageInterface, WsMessageType } from '../build/common';
 
 const PORT: number = Number(process.env.PORT) || 8050; // set our port
 const CLIENT_PATH = '/build/client';
@@ -22,6 +22,10 @@ app.use(express.json() as RequestHandler);
 app.use(express.static(path.resolve("./") + CLIENT_PATH));
 
 app.get('/', (req, res): void => {
+    res.sendFile(path.resolve("./") + `${CLIENT_PATH}/index.html`);
+});
+
+app.get('*', (req,res) =>{
     res.sendFile(path.resolve("./") + `${CLIENT_PATH}/index.html`);
 });
 
