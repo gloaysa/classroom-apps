@@ -18,6 +18,15 @@ const { app } = expressWs;
 app.use(express.urlencoded({ extended: true }) as RequestHandler);
 app.use(cors({ origin: '*' }));
 app.use(express.json() as RequestHandler);
+
+app.use(express.static(path.resolve('./') + CLIENT_PATH));
+app.get('/', (req, res): void => {
+	res.sendFile(path.resolve('./') + `${CLIENT_PATH}/index.html`);
+});
+app.get('*', (req, res) => {
+	res.sendFile(path.resolve('./') + `${CLIENT_PATH}/index.html`);
+});
+
 app.use(function (req, res, next) {
 	const userFromQuery = req.query.user as string;
 	if (!userFromQuery || userFromQuery === 'undefined') {
@@ -28,14 +37,6 @@ app.use(function (req, res, next) {
 });
 
 WsRoute(expressWs);
-
-app.use(express.static(path.resolve('./') + CLIENT_PATH));
-app.get('/', (req, res): void => {
-	res.sendFile(path.resolve('./') + `${CLIENT_PATH}/index.html`);
-});
-app.get('*', (req, res) => {
-	res.sendFile(path.resolve('./') + `${CLIENT_PATH}/index.html`);
-});
 
 // START THE SERVER
 // =============================================================================
