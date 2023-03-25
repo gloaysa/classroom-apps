@@ -8,7 +8,7 @@ const userService = UserService.getInstance();
 export const WsRoute = (expressWs: express_ws.Instance) => {
 	const { app, getWss } = expressWs;
 
-	app.ws('/', (ws, req) => {
+	app.ws('/buzz', (ws, req) => {
 		ws.on('message', (msg) => handleOnWsMessage(ws, req, getWss, msg.toString()));
 
 		ws.on('close', () => handleOnWsClose(req, getWss));

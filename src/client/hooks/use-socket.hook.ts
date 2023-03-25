@@ -2,7 +2,7 @@ import useWebSocket from 'react-use-websocket';
 import { User } from '../../common';
 import { useLocalStorage } from 'usehooks-ts';
 
-const WS_URL = 'ws://localhost:8050';
+const WS_URL = 'ws://localhost:8050/buzz';
 export const useSocketHook = (currentUser?: User) => {
 	const [userLocalStorage, setUserLocalStorage] = useLocalStorage<User | undefined>('user', undefined);
 
