@@ -9,6 +9,7 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import UserListComponent from './components/user-list/user-list.component';
 import { PersistGate } from 'redux-persist/integration/react';
 import SpinnerComponent from './components/spinner/spinner.component';
+import LoginPage from './pages/login/login.page';
 
 const router = createBrowserRouter([
 	{
@@ -22,7 +23,7 @@ const router = createBrowserRouter([
 					{ index: true, element: <App /> },
 					{
 						path: 'login',
-						element: <div>login page</div>,
+						element: <LoginPage />,
 					},
 					{
 						path: '/',

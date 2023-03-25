@@ -1,7 +1,7 @@
 .vscode
 node_modules
 .idea
-server/**
+
 # Logs
 logs
 *.log

@@ -1,17 +1,13 @@
 import './App.css';
 import React, { FunctionComponent, useEffect } from 'react';
 import useWebSocket from 'react-use-websocket';
-import { v4 as uuidv4 } from 'uuid';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectUser, updateUserList } from './store/reducers/user.reducer';
 import { Outlet, useNavigate } from 'react-router-dom';
+import { Container } from '@mui/material';
 
 const WS_URL = 'ws://127.0.0.1:8050';
 
-const queryParams = {
-	user_id: uuidv4(),
-	username: 'username',
-};
 const App: FunctionComponent = () => {
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
@@ -20,7 +16,9 @@ const App: FunctionComponent = () => {
 		onOpen: (event) => {
 			console.log('WebSocket connection established.', event);
 		},
-		queryParams,
+		queryParams: {
+			user: JSON.stringify(currentUser),
+		},
 	});
 
 	useEffect(() => {
@@ -41,9 +39,9 @@ const App: FunctionComponent = () => {
 
 	return (
 		<div className="app" role="main">
-			<article className="app__article">
+			<Container component="main" maxWidth="xs">
 				<Outlet />
-			</article>
+			</Container>
 		</div>
 	);
 };
