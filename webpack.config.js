@@ -72,5 +72,6 @@ module.exports = {
 		new webpack.DefinePlugin(envKeys),
 		new MiniCssExtractPlugin(),
 		new CopyPlugin({ patterns: [{ from: './src/client/assets', to: 'assets' }] }),
+		new CopyPlugin({ patterns: [{ from: './public', to: 'public' }] }),
 	],
 };
