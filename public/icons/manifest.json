@@ -1,5 +1,12 @@
 {
-	"name": "App",
+	"name": "Classroom Apps",
+	"short_name": "CApps",
+	"display": "standalone",
+	"start_url": "/",
+	"theme_color": "#42b1ed",
+	"background_color": "#42b1ed",
+	"id": "@gloaysa/classroom-apps",
+	"scope": "./",
 	"icons": [
 		{
 			"src": "/android-icon-36x36.png",
