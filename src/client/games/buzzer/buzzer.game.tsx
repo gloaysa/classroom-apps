@@ -47,7 +47,7 @@ const BuzzerGame = () => {
 
 			{currentUser?.gameId ? (
 				<Container>
-					<Box sx={{ marginBottom: '15px' }}>
+					<Box sx={{ marginTop: '85px' }}>
 						<BuzzerComponent onClick={handleClickBuzzer} state={buzzerState} />
 					</Box>
 				</Container>

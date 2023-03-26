@@ -54,7 +54,7 @@ const DashboardPage = () => {
 
 	return (
 		<div>
-			<AppBarComponent gameName={currentUser?.gameId} onUserLogout={handleLogout} />
+			<AppBarComponent userName={currentUser?.name} gameName={currentUser?.gameId} onUserLogout={handleLogout} />
 			{hostSelector()}
 			<Container maxWidth="xs">
 				<Outlet />
