@@ -53,6 +53,10 @@ function handleOnWsMessage(ws: ws, req: express.Request, getWss: () => ws.Server
 		case WsMessageType.Buzzed:
 			userService.userBuzzed(user.id, user.gameId, true);
 			break;
+		case WsMessageType.UserLogout:
+			userService.deleteUser(user);
+			console.info(`User ${user.name} removed`);
+			break;
 	}
 
 	const connectedUser = userService.getUserById(user.id);

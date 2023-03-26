@@ -31,8 +31,17 @@ export class UserService {
 		return this.users.find(({ id }) => id === userId);
 	}
 
-	deleteUser(userId: string) {
-		this.users = this.users.filter(({ id }) => id !== userId);
+	deleteUser(user: User) {
+		if (user.isHost) {
+			// if it's the host, remove gameId from all the players in that game
+			this.users = this.users.map((player) => {
+				if (user.players?.some(({ id }) => player.id === id)) {
+					return { ...player, gameId: '' };
+				}
+				return player;
+			});
+		}
+		this.users = this.users.filter(({ id }) => id !== user.id);
 	}
 
 	updateUser(userUpdated: User) {
@@ -69,7 +78,7 @@ export class UserService {
 		if (!gameId) {
 			return undefined;
 		}
-		return this.users.find((user) => user.gameId === gameId);
+		return this.users.find((user) => user.gameId === gameId && user.isHost);
 	}
 
 	addUserToGame(userId: string, gameId: string, isHost = false): User | undefined {

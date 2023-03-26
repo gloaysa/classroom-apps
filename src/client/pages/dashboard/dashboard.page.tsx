@@ -6,7 +6,7 @@ import { Outlet, useNavigate } from 'react-router-dom';
 import { useSocketHook } from '../../hooks/use-socket.hook';
 import { Button } from '@mui/material';
 import { useLocalStorage } from 'usehooks-ts';
-import { User } from '../../../common';
+import { User, WsMessageType } from '../../../common';
 import { MainRoutes } from '../../index.router';
 import { DashboardRoutes } from './dashboard.router';
 
@@ -15,7 +15,7 @@ const DashboardPage = () => {
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
 	const currentUser = useSelector(selectUser);
-	const { lastJsonMessage } = useSocketHook(currentUser);
+	const { lastJsonMessage, sendJsonMessage, getWebSocket } = useSocketHook(currentUser);
 
 	useEffect(() => {
 		handleLastJsonMessageUtil(lastJsonMessage, dispatch);
@@ -24,6 +24,10 @@ const DashboardPage = () => {
 	const handleLogout = () => {
 		dispatch(cleanState());
 		setUserLocalStorage(undefined);
+		sendJsonMessage({
+			type: WsMessageType.UserLogout,
+		});
+		getWebSocket()?.close();
 		navigate(MainRoutes.Login);
 	};
 

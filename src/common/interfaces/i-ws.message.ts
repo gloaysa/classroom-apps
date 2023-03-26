@@ -6,6 +6,7 @@ export enum WsMessageType {
 	ForHost = 'for host',
 	BuzzerOnOff = 'switch buzzers',
 	Buzzed = 'user buzzed',
+	UserLogout = 'user has logged out',
 }
 export interface IWsMessage {
 	[key: string]: any | undefined;
