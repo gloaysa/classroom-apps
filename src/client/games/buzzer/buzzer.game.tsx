@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Container, CssBaseline } from '@mui/material';
+import { Box, Container, CssBaseline } from '@mui/material';
 import MainInputComponent from '../../components/main-input/main-input.component';
 import SportsEsportsIcon from '@mui/icons-material/SportsEsports';
 import { useSelector } from 'react-redux';
@@ -46,12 +46,16 @@ const BuzzerGame = () => {
 			<CssBaseline />
 
 			{currentUser?.gameId ? (
-				<BuzzerComponent onClick={handleClickBuzzer} state={buzzerState} />
+				<Container>
+					<Box sx={{ marginBottom: '15px' }}>
+						<BuzzerComponent onClick={handleClickBuzzer} state={buzzerState} />
+					</Box>
+				</Container>
 			) : (
 				<MainInputComponent
-					title="Ask your teacher for the name"
-					ctaLabel="start game"
-					placeholder="name of the game"
+					title="Ask your teacher for the code"
+					ctaLabel="join game"
+					placeholder="code of the game"
 					icon={<SportsEsportsIcon />}
 					onSubmit={handleSubmit}
 				/>

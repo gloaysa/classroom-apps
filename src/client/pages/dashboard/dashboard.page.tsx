@@ -2,20 +2,23 @@ import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { cleanState, selectUser } from '../../store/reducers/user.reducer';
 import { handleLastJsonMessageUtil } from './handle-last-json-message.util';
-import { Outlet, useNavigate } from 'react-router-dom';
+import { createSearchParams, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { useSocketHook } from '../../hooks/use-socket.hook';
-import { Button } from '@mui/material';
+import { Button, Container } from '@mui/material';
 import { useLocalStorage } from 'usehooks-ts';
 import { User, WsMessageType } from '../../../common';
 import { MainRoutes } from '../../index.router';
 import { DashboardRoutes } from './dashboard.router';
+import AppBarComponent from '../../components/app-bar/app-bar.component';
 
 const DashboardPage = () => {
 	const [userLocalStorage, setUserLocalStorage] = useLocalStorage<User | undefined>('user', undefined);
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
 	const currentUser = useSelector(selectUser);
-	const { lastJsonMessage, sendJsonMessage, getWebSocket } = useSocketHook(currentUser);
+	const { lastJsonMessage, sendJsonMessage } = useSocketHook(currentUser);
+	const currentPath = useLocation().pathname;
+	const currentPageIsHost = currentPath.match(/\/host$/);
 
 	useEffect(() => {
 		handleLastJsonMessageUtil(lastJsonMessage, dispatch);
@@ -27,20 +30,35 @@ const DashboardPage = () => {
 		sendJsonMessage({
 			type: WsMessageType.UserLogout,
 		});
-		getWebSocket()?.close();
-		navigate(MainRoutes.Login);
+		const params = { redirectUrl: currentPath };
+		navigate({
+			pathname: MainRoutes.Login,
+			search: createSearchParams(params).toString(),
+		});
 	};
 
 	const handleGoToHost = () => {
 		navigate(DashboardRoutes.Host);
 	};
 
+	const handleGoToDashboard = () => {
+		navigate(DashboardRoutes.Dashboard);
+	};
+
+	const hostSelector = () => {
+		if (!currentUser?.gameId) {
+			return currentPageIsHost ? <Button onClick={handleGoToDashboard}>Player</Button> : <Button onClick={handleGoToHost}>Host</Button>;
+		}
+		return null;
+	};
+
 	return (
 		<div>
-			<h1>dashboard</h1>
-			<Button onClick={handleLogout}>Logout</Button>
-			<Button onClick={handleGoToHost}>Host</Button>
-			<Outlet />
+			<AppBarComponent gameName={currentUser?.gameId} onUserLogout={handleLogout} />
+			{hostSelector()}
+			<Container maxWidth="xs">
+				<Outlet />
+			</Container>
 		</div>
 	);
 };

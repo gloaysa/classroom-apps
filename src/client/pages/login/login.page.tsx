@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Avatar, Box, Button, Container, CssBaseline, TextField, Typography } from '@mui/material';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { selectUser, setUser } from '../../store/reducers/user.reducer';
 import { v4 as uuidv4 } from 'uuid';
 import { DashboardRoutes } from '../dashboard/dashboard.router';
@@ -11,14 +11,23 @@ import { User } from '../../../common';
 
 const LoginPage = () => {
 	const [userLocalStorage, setUserLocalStorage] = useLocalStorage<User | undefined>('user', undefined);
+	const [redirectUrl, setRedirectUrl] = useState<string | null>(null);
 	const [username, setUsername] = useState('');
 	const currentUser = useSelector(selectUser);
+	const [searchParams] = useSearchParams();
+
+	useEffect(() => {
+		setRedirectUrl(searchParams.get('redirectUrl'));
+	}, []);
 
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
 
 	useEffect(() => {
 		if (currentUser) {
+			if (redirectUrl) {
+				return navigate(redirectUrl);
+			}
 			navigate(DashboardRoutes.Dashboard);
 		}
 		if (userLocalStorage) {

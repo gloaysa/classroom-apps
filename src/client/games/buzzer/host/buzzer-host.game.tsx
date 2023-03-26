@@ -1,7 +1,6 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Container, CssBaseline, FormControlLabel, Switch } from '@mui/material';
-import SportsEsportsIcon from '@mui/icons-material/SportsEsports';
+import { Box, Container, CssBaseline, FormControlLabel, Switch } from '@mui/material';
+import EmojiPeopleIcon from '@mui/icons-material/EmojiPeople';
 import { useSocketHook } from '../../../hooks/use-socket.hook';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectUser, setUser } from '../../../store/reducers/user.reducer';
@@ -12,7 +11,6 @@ import UserListComponent from '../../../components/user-list/user-list.component
 const BuzzerHostGame = () => {
 	const currentUser = useSelector(selectUser);
 	const dispatch = useDispatch();
-	const navigate = useNavigate();
 
 	const { sendJsonMessage } = useSocketHook(currentUser);
 
@@ -44,15 +42,21 @@ const BuzzerHostGame = () => {
 			<CssBaseline />
 			{currentUser?.gameId ? (
 				<Container>
-					<FormControlLabel control={<Switch defaultChecked={false} onChange={handleBuzzers} />} label="Buzzers are..." />
-					<UserListComponent />
+					<FormControlLabel
+						disabled={!currentUser?.players?.length}
+						control={<Switch defaultChecked={false} onChange={handleBuzzers} />}
+						label="Buzzers are..."
+					/>
+					<Box sx={{ marginTop: '15px' }}>
+						<UserListComponent />
+					</Box>
 				</Container>
 			) : (
 				<MainInputComponent
-					title="Name your game"
-					ctaLabel="start game"
+					title="You are the host"
+					ctaLabel="start new game"
 					placeholder="name your game"
-					icon={<SportsEsportsIcon />}
+					icon={<EmojiPeopleIcon />}
 					onSubmit={handleSubmit}
 				/>
 			)}
