@@ -150,10 +150,10 @@ export class UserService {
 		const sortByDate = (first: Player, second: Player) => {
 			const firstDate = first.buzzed ?? '';
 			const secondDate = second.buzzed ?? '';
-			if (first.buzzed === undefined) {
+			if (!first.buzzed) {
 				return 1;
 			}
-			if (second.buzzed === undefined) {
+			if (!second.buzzed) {
 				return -1;
 			}
 			return new Date(firstDate).getTime() - new Date(secondDate).getTime();
