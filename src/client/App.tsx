@@ -14,7 +14,7 @@ const App: FunctionComponent = () => {
 	useEffect(() => {
 		if (!currentUser) {
 			navigate(MainRoutes.Login);
-		} else {
+		} else if (location.pathname === '/') {
 			navigate(DashboardRoutes.Dashboard);
 		}
 	}, [currentUser]);
