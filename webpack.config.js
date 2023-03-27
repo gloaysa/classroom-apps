@@ -73,5 +73,6 @@ module.exports = {
 		new MiniCssExtractPlugin(),
 		new CopyPlugin({ patterns: [{ from: './src/client/assets', to: 'assets' }] }),
 		new CopyPlugin({ patterns: [{ from: './public', to: 'public' }] }),
+		new CopyPlugin({ patterns: [{ from: './public/manifest.json', to: 'manifest.json' }] }),
 	],
 };
