@@ -1,11 +1,13 @@
-export interface User {
+export interface IUser {
 	id: string;
 	name: string;
-	isHost?: boolean;
+	isHost: boolean;
 	gameId?: string;
-	connected?: boolean;
+	connected: boolean;
 
 	players?: Player[];
+
+	makeHost: (isHost: boolean) => void;
 }
 
 export interface Player {

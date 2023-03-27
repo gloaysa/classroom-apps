@@ -23,9 +23,11 @@ const AppBarComponent: FunctionComponent<IAppBar> = ({ gameName, userName, onUse
 					<Typography variant="h6" component="div" sx={{ flexGrow: 1, textAlign: 'center' }}>
 						{gameName}
 					</Typography>
-					<Button color="inherit" onClick={onUserLogout}>
-						Logout
-					</Button>
+					{userName ? (
+						<Button color="inherit" onClick={onUserLogout}>
+							Logout
+						</Button>
+					) : null}
 				</Toolbar>
 			</AppBar>
 		</Box>

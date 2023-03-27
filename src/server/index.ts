@@ -5,7 +5,8 @@ import cors from 'cors';
 
 import * as path from 'path';
 import connectToDB from './db';
-import { WsRoute } from './routes/ws/ws.route';
+import { roomRoute } from './routes/room/room.route';
+import { userRoute } from './routes/user/user.route';
 
 const PORT: number = Number(process.env.PORT) || 8050; // set our port
 const CLIENT_PATH = '/dist';
@@ -19,7 +20,8 @@ app.use(express.urlencoded({ extended: true }) as RequestHandler);
 app.use(cors({ origin: '*' }));
 app.use(express.json() as RequestHandler);
 
-WsRoute(expressWs);
+roomRoute(expressWs);
+userRoute(expressWs);
 
 app.use(express.static(path.resolve('./') + CLIENT_PATH));
 app.get('/', (req, res): void => {

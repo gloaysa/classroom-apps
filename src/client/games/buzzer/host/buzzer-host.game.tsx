@@ -3,10 +3,11 @@ import { Box, Container, CssBaseline, FormControlLabel, Switch } from '@mui/mate
 import EmojiPeopleIcon from '@mui/icons-material/EmojiPeople';
 import { useSocketHook } from '../../../hooks/use-socket.hook';
 import { useDispatch, useSelector } from 'react-redux';
-import { selectUser, setUser } from '../../../store/reducers/user.reducer';
-import { IWsMessage, WsMessageType } from '../../../../common';
+import { selectUser, setUserAction } from '../../../store/reducers/user.reducer';
+import { IWsMessage } from '../../../../common';
 import MainInputComponent from '../../../components/main-input/main-input.component';
 import UserListComponent from '../../../components/user-list/user-list.component';
+import { BuzzerMessages } from '../../../../common/interfaces/messages';
 
 const BuzzerHostGame = () => {
 	const currentUser = useSelector(selectUser);
@@ -16,20 +17,20 @@ const BuzzerHostGame = () => {
 
 	const handleSubmit = (name: string) => {
 		const message: IWsMessage = {
-			type: WsMessageType.NewGame,
+			type: BuzzerMessages.BuzzerNewGame,
 			data: {
 				gameName: name,
 			},
 		};
 		if (currentUser) {
-			dispatch(setUser({ ...currentUser, isHost: true }));
+			dispatch(setUserAction({ ...currentUser, isHost: true }));
 			sendJsonMessage(message);
 		}
 	};
 
 	const handleBuzzers = (event: React.ChangeEvent<HTMLInputElement>) => {
 		const message: IWsMessage = {
-			type: WsMessageType.BuzzerOnOff,
+			type: BuzzerMessages.BuzzerOnOff,
 			data: {
 				state: event.target.checked,
 			},

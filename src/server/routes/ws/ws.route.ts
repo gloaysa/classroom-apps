@@ -1,5 +1,6 @@
+/*
 import express_ws from 'express-ws';
-import { IWsMessage, User, WsMessageType } from '../../../common';
+import { IWsMessage, IUser } from '../../../common';
 import { UserService } from '../../services/user/user.service';
 import * as ws from 'ws';
 import * as express from 'express';
@@ -19,7 +20,7 @@ export const WsRoute = (expressWs: express_ws.Instance) => {
 function handleOnWsMessage(ws: ws, req: express.Request, getWss: () => ws.Server, msg: string) {
 	try {
 		const userFromQuery = JSON.parse(req.query.user?.toString() ?? '');
-		const user: User | undefined = userService.getUserById(userFromQuery?.id);
+		const user: IUser | undefined = userService.getUserById(userFromQuery?.id);
 		const message: IWsMessage | undefined = JSON.parse(msg);
 
 		if (!message || !user) {
@@ -82,7 +83,7 @@ function handleOnWsConnect(ws: ws, req: express.Request, getWss: () => ws.Server
 		ws.close(403);
 	}
 	try {
-		const user: User = JSON.parse(userFromQuery);
+		const user: IUser = JSON.parse(userFromQuery);
 		console.log(userFromQuery);
 		const newUser = userService.createNewUser(user.id, user.name);
 		console.info(`${user.name} connected with id ${user.id}.`);
@@ -109,7 +110,7 @@ function handleOnWsClose(req: express.Request, getWss: () => ws.Server) {
 	try {
 		const userFromQuery = JSON.parse(req.query.user?.toString() ?? '');
 
-		const user: User | undefined = userService.getUserById(userFromQuery?.id);
+		const user: IUser | undefined = userService.getUserById(userFromQuery?.id);
 		if (!user) {
 			return;
 		}
@@ -138,3 +139,4 @@ function broadcastMessage(json: IWsMessage, getWss: () => ws.Server) {
 		}
 	});
 }
+*/

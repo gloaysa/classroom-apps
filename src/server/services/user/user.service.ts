@@ -1,8 +1,10 @@
-import { Player, User } from '../../../common';
+import { IUser, Player } from '../../../common';
+import { UserModel } from '../../models/user.model';
+import { v4 as uuidv4 } from 'uuid';
 
 export class UserService {
 	private static instance: UserService;
-	private users: User[] = [];
+	private users: IUser[] = [];
 
 	static getInstance() {
 		if (!this.instance) {
@@ -12,39 +14,31 @@ export class UserService {
 		return this.instance;
 	}
 
-	createNewUser(userId: string, userName: string): User {
+	createNewUser(userName: string): IUser {
+		const userId = uuidv4();
 		const existingUser = this.getUserById(userId);
 		if (existingUser) {
 			this.connectUser(existingUser);
 			return existingUser;
 		}
-		const newUser = { id: userId, name: userName, connected: true };
-		this.users = [...this.users, newUser];
-		return newUser;
+		const user = new UserModel(userId, userName);
+		this.users = [...this.users, user];
+		return user;
 	}
 
-	getAllUsers(): User[] {
+	getAllUsers(): IUser[] {
 		return this.users;
 	}
 
-	getUserById(userId: string | undefined): User | undefined {
+	getUserById(userId: string | undefined): IUser | undefined {
 		return this.users.find(({ id }) => id === userId);
 	}
 
-	deleteUser(user: User) {
-		if (user.isHost) {
-			// if it's the host, remove gameId from all the players in that game
-			this.users = this.users.map((player) => {
-				if (user.players?.some(({ id }) => player.id === id)) {
-					return { ...player, gameId: '' };
-				}
-				return player;
-			});
-		}
-		this.users = this.users.filter(({ id }) => id !== user.id);
+	deleteUser(userId: string) {
+		this.users = this.users.filter(({ id }) => id !== userId);
 	}
 
-	updateUser(userUpdated: User) {
+	updateUser(userUpdated: IUser) {
 		this.users = this.users.map((user) => {
 			if (user.id !== userUpdated.id) {
 				return user;
@@ -53,7 +47,7 @@ export class UserService {
 		});
 	}
 
-	disconnectUser(user: User) {
+	disconnectUser(user: IUser) {
 		this.updateUser({
 			...user,
 			connected: false,
@@ -63,7 +57,7 @@ export class UserService {
 		}
 	}
 
-	connectUser(user: User) {
+	connectUser(user: IUser) {
 		this.updateUser({
 			...user,
 			connected: true,
@@ -74,14 +68,14 @@ export class UserService {
 		}
 	}
 
-	getGameHost(gameId?: string): User | undefined {
+	getGameHost(gameId?: string): IUser | undefined {
 		if (!gameId) {
 			return undefined;
 		}
 		return this.users.find((user) => user.gameId === gameId && user.isHost);
 	}
 
-	addUserToGame(userId: string, gameId: string, isHost = false): User | undefined {
+	addUserToGame(userId: string, gameId: string, isHost = false): IUser | undefined {
 		const user = this.getUserById(userId);
 		if (!user) {
 			return;
@@ -129,7 +123,7 @@ export class UserService {
 		});
 	}
 
-	resetBuzzed(gameId: string | undefined): User | undefined {
+	resetBuzzed(gameId: string | undefined): IUser | undefined {
 		const host = this.getGameHost(gameId);
 		if (!host) {
 			return;
@@ -146,7 +140,7 @@ export class UserService {
 		return updatedHost;
 	}
 
-	userBuzzed(userId: string, gameId: string | undefined, buzzed: boolean): User | undefined {
+	userBuzzed(userId: string, gameId: string | undefined, buzzed: boolean): IUser | undefined {
 		const sortByDate = (first: Player, second: Player) => {
 			const firstDate = first.buzzed ?? '';
 			const secondDate = second.buzzed ?? '';

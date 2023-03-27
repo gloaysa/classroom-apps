@@ -5,8 +5,8 @@
 	"description": "A collection of apps for the classroom",
 	"display": "standalone",
 	"start_url": "/",
-	"theme_color": "#42b1ed",
-	"background_color": "#42b1ed",
+	"theme_color": "#1976D2",
+	"background_color": "#1976D2",
 	"id": "@gloaysa/classroom-apps",
 	"scope": "./",
 	"icons": [

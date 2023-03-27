@@ -1,60 +1,54 @@
 import React, { useEffect, useState } from 'react';
 import { Avatar, Box, Button, Container, CssBaseline, TextField, Typography } from '@mui/material';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { selectUser, setUser } from '../../store/reducers/user.reducer';
-import { v4 as uuidv4 } from 'uuid';
 import { DashboardRoutes } from '../dashboard/dashboard.router';
-import { useLocalStorage } from 'usehooks-ts';
-import { User } from '../../../common';
+import { useUserHook } from '../../hooks/use-user.hook';
+import { useGetUserIdHook } from '../../hooks/use-get-user-id.hook';
+import { verifyUsernameUtil } from '../../../common/utils/verify-username.util';
 
 const LoginPage = () => {
-	const [userLocalStorage, setUserLocalStorage] = useLocalStorage<User | undefined>('user', undefined);
+	const { userId, setUserId } = useGetUserIdHook();
 	const [redirectUrl, setRedirectUrl] = useState<string | null>(null);
 	const [username, setUsername] = useState('');
-	const currentUser = useSelector(selectUser);
 	const [searchParams] = useSearchParams();
+	const dispatch = useDispatch();
+	const navigate = useNavigate();
+	const { createUser } = useUserHook(dispatch);
+	const showError = username?.length >= 3 && !verifyUsernameUtil(username);
+	const errorHelperText = 'Username must have between 3 and 15 letters';
 
 	useEffect(() => {
 		setRedirectUrl(searchParams.get('redirectUrl'));
 	}, []);
 
-	const dispatch = useDispatch();
-	const navigate = useNavigate();
-
 	useEffect(() => {
-		if (currentUser) {
+		if (userId) {
 			if (redirectUrl) {
 				return navigate(redirectUrl);
 			}
 			navigate(DashboardRoutes.Dashboard);
 		}
-		if (userLocalStorage) {
-			dispatch(setUser(userLocalStorage));
-			navigate(DashboardRoutes.Dashboard);
-		}
-	}, [currentUser]);
+	}, [userId]);
 
 	const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
 		const data = new FormData(event.currentTarget);
-		const user = data.get('username');
-		if (user && typeof user === 'string') {
-			const newUser = {
-				id: uuidv4(),
-				name: user,
-			};
-			setUserLocalStorage(newUser);
-			dispatch(setUser(newUser));
+		const username = data.get('username');
+
+		if (username && typeof username === 'string') {
+			createUser(username).then((user) => {
+				if (user) {
+					setUserId(user.id);
+				}
+			});
 		}
 	};
 
 	const handleInputChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
 		const user = event.target.value;
-		if (user?.length >= 3) {
-			setUsername(user);
-		}
+		setUsername(user);
 	};
 
 	return (
@@ -85,8 +79,10 @@ const LoginPage = () => {
 						autoComplete="username"
 						autoFocus
 						onChange={handleInputChange}
+						error={showError}
+						helperText={errorHelperText}
 					/>
-					<Button type="submit" fullWidth variant="contained" disabled={!username} sx={{ mt: 3, mb: 2 }}>
+					<Button type="submit" fullWidth variant="contained" disabled={!verifyUsernameUtil(username)} sx={{ mt: 3, mb: 2 }}>
 						Go!
 					</Button>
 				</Box>

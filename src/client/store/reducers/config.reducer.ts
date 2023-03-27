@@ -23,6 +23,6 @@ export const configSlice = createSlice({
 
 export const { setBuzzerOnOff } = configSlice.actions;
 
-export const selectBuzzerOnOff = (state: RootState): string => state.config.buzzerOn;
+export const selectBuzzerOnOff = (state: RootState): boolean => state.config.buzzerOn;
 
 export default configSlice.reducer;

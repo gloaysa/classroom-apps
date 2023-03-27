@@ -4,10 +4,11 @@ import MainInputComponent from '../../components/main-input/main-input.component
 import SportsEsportsIcon from '@mui/icons-material/SportsEsports';
 import { useSelector } from 'react-redux';
 import { selectUser } from '../../store/reducers/user.reducer';
-import { IWsMessage, WsMessageType } from '../../../common';
+import { IWsMessage } from '../../../common';
 import { useSocketHook } from '../../hooks/use-socket.hook';
 import BuzzerComponent, { BuzzerState } from '../../components/buzzer/buzzer.component';
 import { selectBuzzerOnOff } from '../../store/reducers/config.reducer';
+import { BuzzerMessages, UserMessages } from '../../../common/interfaces/messages';
 
 const BuzzerGame = () => {
 	const [buzzerState, setBuzzerState] = useState<BuzzerState>('waiting');
@@ -22,7 +23,7 @@ const BuzzerGame = () => {
 
 	const handleSubmit = (name: string) => {
 		const message: IWsMessage = {
-			type: WsMessageType.JoinGame,
+			type: UserMessages.UserJoinGame,
 			data: {
 				gameName: name,
 			},
@@ -34,7 +35,7 @@ const BuzzerGame = () => {
 		if (buzzerOn && buzzerState !== 'buzzed') {
 			setBuzzerState('buzzed');
 			const message: IWsMessage = {
-				type: WsMessageType.Buzzed,
+				type: BuzzerMessages.BuzzerBuzzed,
 				data: true,
 			};
 			sendJsonMessage(message);

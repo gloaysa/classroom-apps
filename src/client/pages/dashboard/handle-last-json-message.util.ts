@@ -1,27 +1,28 @@
 import { Dispatch } from '@reduxjs/toolkit';
-import { IWsMessage, WsMessageType } from '../../../common';
-import { setHost, setUser } from '../../store/reducers/user.reducer';
+import { IWsMessage } from '../../../common';
+import { setHostAction, setUserAction } from '../../store/reducers/user.reducer';
 import { setBuzzerOnOff } from '../../store/reducers/config.reducer';
+import { BuzzerMessages, UserMessages } from '../../../common/interfaces/messages';
 
 export const handleLastJsonMessageUtil = (message: IWsMessage, dispatch: Dispatch) => {
 	if (message !== null) {
 		switch (message.type) {
-			case WsMessageType.NewUser:
+			case UserMessages.UserNew:
 				if (message.data) {
-					dispatch(setUser(message.data));
+					dispatch(setUserAction(message.data));
 				}
 				break;
-			case WsMessageType.User:
+			case UserMessages.User:
 				if (message.data) {
-					dispatch(setUser(message.data));
+					dispatch(setUserAction(message.data));
 				}
 				break;
-			case WsMessageType.ForHost:
+			case UserMessages.UserForHost:
 				if (message.data) {
-					dispatch(setHost(message.data));
+					dispatch(setHostAction(message.data));
 				}
 				break;
-			case WsMessageType.BuzzerOnOff:
+			case BuzzerMessages.BuzzerOnOff:
 				dispatch(setBuzzerOnOff(message.data));
 		}
 	}
