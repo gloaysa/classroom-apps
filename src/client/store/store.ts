@@ -2,8 +2,10 @@ import { combineReducers, configureStore } from '@reduxjs/toolkit';
 import thunk from 'redux-thunk';
 import configReducer from './reducers/config.reducer';
 import userReducer from './reducers/user.reducer';
+import mainReducer from './reducers/main.reducer';
 
 const rootReducer = combineReducers({
+	main: mainReducer,
 	config: configReducer,
 	user: userReducer,
 });

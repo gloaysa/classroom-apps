@@ -8,4 +8,6 @@ export interface IRoom {
 	host: IUser;
 
 	broadcastToPlayers(message: IWsMessage): void;
+	addUser(user: IUser): void;
+	removeUser(user: IUser): void;
 }

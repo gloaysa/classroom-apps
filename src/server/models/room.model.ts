@@ -14,11 +14,14 @@ export class RoomModel implements IRoom {
 	}
 
 	addUser(user: IUser): void {
-		this.users.push(user);
+		const userAlreadyJoined = this.users.find(({ id }) => user.id === id);
+		if (!userAlreadyJoined && !user.isHost) {
+			this.users.push(user);
+		}
 	}
 
 	removeUser(user: IUser): void {
-		this.users = this.users.filter(({ id }) => id !== id);
+		this.users = this.users.filter(({ id }) => id !== user.id);
 	}
 
 	broadcastToPlayers(message: IWsMessage) {

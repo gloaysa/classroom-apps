@@ -25,12 +25,13 @@ export const roomRoute = (expressWs: express_ws.Instance) => {
 			if (!user) {
 				return res.status(403).send('No user found');
 			}
+			user.makeHost(true);
 			const room = roomService.createRoom(roomId, user);
 			if (!room) {
 				return res.send(ErrorMessages.ErrorRoomAlreadyExist);
 			}
 			console.info(`New room ${roomId} for user ${user.name} - ${user.id}`);
-			return res.send({ roomId });
+			return res.send({ roomId, user });
 		} catch (e) {
 			console.error(`It was not possible to create new room`);
 		}
@@ -38,33 +39,30 @@ export const roomRoute = (expressWs: express_ws.Instance) => {
 
 	app.ws('/room/:roomId', (client, req) => {
 		const roomId = req.params.roomId?.toString();
+		const userId = req.query.userId?.toString();
 		try {
-			const isHost = req.query.isHost?.toString();
-			const user: IUser | undefined = userService.getUserById(req.query.user?.toString());
+			const user: IUser | undefined = userService.getUserById(userId);
 
 			if (!user) {
-				client.send('Room does not exists, closing connection...');
+				console.error(`User ${userId} not found when joining room ${roomId}`);
+				client.send('User does not exists, closing connection...');
 				client.close();
 				return;
 			}
 
-			let room: IRoom | undefined;
-			room = roomService.getRoomById(roomId);
-
-			if (isHost) {
-				if (!room) {
-					room = roomService.createRoom(roomId, user);
-				}
-			}
+			const room: IRoom | undefined = roomService.getRoomById(roomId);
 
 			if (!room) {
-				client.send('room does not exist');
+				const message = JSON.stringify(new WsMessage(ErrorMessages.ErrorRoomDoestNotExist, roomId));
+				console.error(message);
+				client.send(message);
 				client.close();
 				return;
 			}
-
-			console.log(`User joined room ${roomId}`);
-			client.send('connected!');
+			room.addUser(user);
+			const message = JSON.stringify(new WsMessage(UserMessages.UserJoinGame, user));
+			console.info(message);
+			client.send(message);
 		} catch (e) {
 			client.close();
 			console.error(`Not possible to connect client to room ${roomId}: ${e}`);

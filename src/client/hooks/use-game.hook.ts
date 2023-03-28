@@ -1,6 +1,7 @@
 import { useCallback, useState } from 'react';
 import { IUser } from '../../common';
 import { Dispatch } from '@reduxjs/toolkit';
+import { setUserAction } from '../store/reducers/user.reducer';
 
 export const useGameHook = (dispatch: Dispatch) => {
 	const [error, setError] = useState<string | undefined>();
@@ -20,9 +21,10 @@ export const useGameHook = (dispatch: Dispatch) => {
 			return e;
 		});
 		if (response.ok) {
-			const { roomId } = await response.json();
+			const { roomId, user: userUpdated } = await response.json();
 			setLoading(false);
 			setError(undefined);
+			dispatch(setUserAction(userUpdated));
 			return roomId;
 		}
 		setError('User not found');

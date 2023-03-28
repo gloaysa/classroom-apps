@@ -1,25 +1,19 @@
-import { RouteObject } from 'react-router-dom';
-import BuzzerGame from './buzzer.game';
-import BuzzerHostGame from './host/buzzer-host.game';
 import React from 'react';
-import BuzzerPlayerGame from './buzzer-player.game';
+import { RouteObject } from 'react-router-dom';
+import BuzzerLobbyGame from './buzzer-lobby.game';
+import BuzzerRoomGame from './buzzer-room.game';
 
 export enum BuzzerRoutes {
-	Main = '/buzzer',
-	Game = '/buzzer',
-	Host = '/buzzer/host',
+	Lobby = '/buzzer',
+	Room = '/buzzer',
 }
 export const BuzzerRouter: RouteObject = {
-	path: BuzzerRoutes.Main,
-	element: <BuzzerGame />,
+	path: BuzzerRoutes.Lobby,
+	element: <BuzzerLobbyGame />,
 	children: [
 		{
-			path: BuzzerRoutes.Host,
-			element: <BuzzerHostGame />,
-		},
-		{
-			path: `${BuzzerRoutes.Game}/:gameId`,
-			element: <BuzzerPlayerGame />,
+			path: `${BuzzerRoutes.Room}/:gameId`,
+			element: <BuzzerRoomGame />,
 		},
 	],
 };
