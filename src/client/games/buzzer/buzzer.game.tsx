@@ -1,66 +1,78 @@
-import React, { useEffect, useState } from 'react';
-import { Box, Container, CssBaseline } from '@mui/material';
+import React from 'react';
+import { Button, Container, CssBaseline } from '@mui/material';
 import MainInputComponent from '../../components/main-input/main-input.component';
 import SportsEsportsIcon from '@mui/icons-material/SportsEsports';
+import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import { useSelector } from 'react-redux';
 import { selectUser } from '../../store/reducers/user.reducer';
 import { IWsMessage } from '../../../common';
 import { useSocketHook } from '../../hooks/use-socket.hook';
-import BuzzerComponent, { BuzzerState } from '../../components/buzzer/buzzer.component';
-import { selectBuzzerOnOff } from '../../store/reducers/config.reducer';
-import { BuzzerMessages, UserMessages } from '../../../common/interfaces/messages';
+import { UserMessages } from '../../../common/interfaces/messages';
+import { BuzzerRoutes } from './buzzer.router';
+import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 
 const BuzzerGame = () => {
-	const [buzzerState, setBuzzerState] = useState<BuzzerState>('waiting');
 	const currentUser = useSelector(selectUser);
-	const buzzerOn = useSelector(selectBuzzerOnOff);
-
-	useEffect(() => {
-		setBuzzerState(buzzerOn ? 'ready' : 'waiting');
-	}, [buzzerOn]);
+	const navigate = useNavigate();
+	const currentPath = useLocation().pathname;
+	const currentPageIsHost = currentPath.match(`${BuzzerRoutes.Host}$`);
+	const currentPageIsMain = currentPath.match(`${BuzzerRoutes.Main}$`);
+	const validateInput = (input: string): boolean => {
+		const codeValidation = /^[a-zA-Z0-9]{4}$/;
+		return !!input.match(codeValidation);
+	};
 
 	const { sendJsonMessage } = useSocketHook(currentUser);
 
-	const handleSubmit = (name: string) => {
+	const handleJoinGame = (code: string) => {
 		const message: IWsMessage = {
 			type: UserMessages.UserJoinGame,
 			data: {
-				gameName: name,
+				gameName: code,
 			},
 		};
 		sendJsonMessage(message);
+		navigate(`${BuzzerRoutes.Game}/gameId`);
 	};
 
-	const handleClickBuzzer = () => {
-		if (buzzerOn && buzzerState !== 'buzzed') {
-			setBuzzerState('buzzed');
-			const message: IWsMessage = {
-				type: BuzzerMessages.BuzzerBuzzed,
-				data: true,
-			};
-			sendJsonMessage(message);
+	const handleGoToHost = () => {
+		navigate(BuzzerRoutes.Host);
+	};
+
+	const handleGoToMain = () => {
+		navigate(BuzzerRoutes.Main);
+	};
+
+	const hostSelector = () => {
+		if (currentPageIsMain) {
+			return currentPageIsHost ? <Button onClick={handleGoToMain}>Join game</Button> : <Button onClick={handleGoToHost}>Host</Button>;
 		}
+		return (
+			<Button onClick={handleGoToMain} startIcon={<ArrowBackIosIcon />}>
+				Back
+			</Button>
+		);
 	};
 
 	return (
 		<Container>
 			<CssBaseline />
+			{hostSelector()}
 
-			{currentUser?.gameId ? (
-				<Container>
-					<Box sx={{ marginTop: '85px' }}>
-						<BuzzerComponent onClick={handleClickBuzzer} state={buzzerState} />
-					</Box>
-				</Container>
-			) : (
+			{currentPageIsMain ? (
 				<MainInputComponent
 					title="Ask your teacher for the code"
 					ctaLabel="join game"
-					placeholder="code of the game"
+					placeholder="Code of the game"
 					icon={<SportsEsportsIcon />}
-					onSubmit={handleSubmit}
+					onSubmit={handleJoinGame}
+					validateInput={validateInput}
+					helperText="4 letters and/or numbers. E.g: eCT4"
+					minLength={4}
 				/>
-			)}
+			) : null}
+
+			<Outlet />
 		</Container>
 	);
 };

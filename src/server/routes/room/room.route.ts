@@ -5,20 +5,23 @@ import { WsMessage } from '../../models/ws-message.model';
 import { IRoom } from '../../../common/interfaces/room.interface';
 import { UserService } from '../../services/user/user.service';
 import { ErrorMessages, UserMessages } from '../../../common/interfaces/messages';
+import ShortUniqueId from 'short-unique-id';
 
 const roomService = RoomService.getInstance();
 const userService = UserService.getInstance();
+const uniqueIdGenerator = new ShortUniqueId({ length: 4 });
+
 export const roomRoute = (expressWs: express_ws.Instance) => {
 	const { app } = expressWs;
 
 	app.post('/room', (req, res) => {
 		try {
-			const userId = req.headers['user-id'];
+			const roomId = uniqueIdGenerator();
+			const userId = req.headers['x-user-id'];
 			if (!userId || typeof userId !== 'string') {
 				return res.status(403).send('No user id found');
 			}
 			const user: IUser | undefined = userService.getUserById(userId);
-			const { roomId } = req.body;
 			if (!user) {
 				return res.status(403).send('No user found');
 			}

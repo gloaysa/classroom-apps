@@ -23,7 +23,7 @@ const router = createBrowserRouter([
 						path: MainRoutes.Login,
 						element: <LoginPage />,
 					},
-					DashboardRouter,
+					...DashboardRouter,
 				],
 			},
 		],

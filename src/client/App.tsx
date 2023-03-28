@@ -23,10 +23,9 @@ const App: FunctionComponent = () => {
 			navigate(MainRoutes.Login);
 		} else if (!currentUser) {
 			getUser(userId).then((user) => {
-				if (user) {
-					navigate(DashboardRoutes.Dashboard);
-				} else {
+				if (!user) {
 					setUserId('');
+					navigate(MainRoutes.Login);
 				}
 			});
 		}
