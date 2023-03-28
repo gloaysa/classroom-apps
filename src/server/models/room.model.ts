@@ -3,7 +3,6 @@ import { IUser, IWsMessage } from '../../common';
 
 export class RoomModel implements IRoom {
 	users: IUser[] = [];
-	clients: WebSocket[] = [];
 	id: string;
 
 	host: IUser;
@@ -15,9 +14,10 @@ export class RoomModel implements IRoom {
 
 	addUser(user: IUser): void {
 		const userAlreadyJoined = this.users.find(({ id }) => user.id === id);
-		if (!userAlreadyJoined && !user.isHost) {
-			this.users.push(user);
+		if (userAlreadyJoined || user.isHost) {
+			return;
 		}
+		this.users.push(user);
 	}
 
 	removeUser(user: IUser): void {
@@ -25,8 +25,12 @@ export class RoomModel implements IRoom {
 	}
 
 	broadcastToPlayers(message: IWsMessage) {
-		this.clients.forEach((client) => {
-			client.send(JSON.stringify(message));
+		this.users.forEach((user) => {
+			user.room?.send(message.getString());
 		});
+	}
+
+	broadcastToHost(message: IWsMessage) {
+		this.host.room?.send(message.getString());
 	}
 }

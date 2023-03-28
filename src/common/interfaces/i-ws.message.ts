@@ -1,9 +1,12 @@
-import { BuzzerMessages, ErrorMessages, UserMessages } from './messages';
+import { BuzzerMessages, ErrorMessages, RoomMessages, UserMessages } from './messages';
+import { IUser } from './user.interface';
 
-export type WsMessageType = BuzzerMessages | UserMessages | ErrorMessages;
+export type WsMessageType = BuzzerMessages | UserMessages | ErrorMessages | RoomMessages;
 
 export interface IWsMessage {
 	[key: string]: any | undefined;
 	type: WsMessageType;
-	data: any;
+	data: IUser | any;
+
+	getString: () => string;
 }

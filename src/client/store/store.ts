@@ -3,9 +3,11 @@ import thunk from 'redux-thunk';
 import configReducer from './reducers/config.reducer';
 import userReducer from './reducers/user.reducer';
 import mainReducer from './reducers/main.reducer';
+import roomReducer from './reducers/room.reducer';
 
 const rootReducer = combineReducers({
 	main: mainReducer,
+	room: roomReducer,
 	config: configReducer,
 	user: userReducer,
 });

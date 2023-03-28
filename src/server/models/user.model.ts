@@ -1,10 +1,12 @@
 import { IUser } from '../../common';
+import ws from 'ws';
 
 export class UserModel implements IUser {
-	id: string;
-	name: string;
-	isHost = false;
+	readonly id: string;
+	readonly name: string;
+	room: ws.WebSocket | undefined;
 	connected = false;
+	isHost = false;
 
 	constructor(id: string, name: string) {
 		this.id = id;
@@ -13,5 +15,9 @@ export class UserModel implements IUser {
 
 	makeHost(isHost: boolean) {
 		this.isHost = isHost;
+	}
+
+	addRoom(room: ws.WebSocket) {
+		this.room = room;
 	}
 }

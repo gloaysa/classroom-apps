@@ -1,29 +1,29 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { RootState } from '../store';
-import { IClientErrors } from '../../interfaces/client-errors.interface';
+import { IClientMessages } from '../../../common/interfaces/messages/client-messages.interface';
 
 // Define a type for the slice state
 interface MainState {
-	lastError: IClientErrors | undefined;
+	lastMessage: IClientMessages | undefined;
 }
 
 // Define the initial state using that type
 const initialState: MainState = {
-	lastError: undefined,
+	lastMessage: undefined,
 };
 
 export const mainSlice = createSlice({
 	name: 'main',
 	initialState,
 	reducers: {
-		setLastErrorAction: (state, action: PayloadAction<IClientErrors | undefined>) => {
-			state.lastError = action.payload;
+		setLastMessageAction: (state, action: PayloadAction<IClientMessages | undefined>) => {
+			state.lastMessage = action.payload;
 		},
 	},
 });
 
-export const { setLastErrorAction } = mainSlice.actions;
+export const { setLastMessageAction } = mainSlice.actions;
 
-export const selectLastError = (state: RootState): IClientErrors | undefined => state.main.lastError;
+export const selectLastMessage = (state: RootState): IClientMessages | undefined => state.main.lastMessage;
 
 export default mainSlice.reducer;

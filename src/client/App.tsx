@@ -8,14 +8,14 @@ import { useGetUserIdHook } from './hooks/use-get-user-id.hook';
 import { useUserHook } from './hooks/use-user.hook';
 import { useDispatch, useSelector } from 'react-redux';
 import AppBarComponent from './components/app-bar/app-bar.component';
-import { selectLastError, setLastErrorAction } from './store/reducers/main.reducer';
+import { selectLastMessage, setLastMessageAction } from './store/reducers/main.reducer';
 
 const App: FunctionComponent = () => {
 	const dispatch = useDispatch();
 	const { userId, setUserId } = useGetUserIdHook();
 	const { getUser, deleteUser } = useUserHook(dispatch);
 	const currentUser = useSelector(selectUser);
-	const lastError = useSelector(selectLastError);
+	const lastError = useSelector(selectLastMessage);
 	const currentPath = useLocation().pathname;
 	const navigate = useNavigate();
 
@@ -55,13 +55,18 @@ const App: FunctionComponent = () => {
 			return;
 		}
 
-		dispatch(setLastErrorAction(undefined));
+		dispatch(setLastMessageAction(undefined));
 	};
 
 	return (
 		<Box component="main" maxWidth="l">
-			<AppBarComponent userName={currentUser?.name} gameName={currentUser?.gameId} onUserLogout={handleLogout} />
-			<Snackbar anchorOrigin={{ vertical: 'top', horizontal: 'center' }} open={!!lastError} autoHideDuration={6000}>
+			<AppBarComponent userName={currentUser?.name} onUserLogout={handleLogout} />
+			<Snackbar
+				onClose={handleDismissNotification}
+				anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+				open={!!lastError}
+				autoHideDuration={3000}
+			>
 				<Alert onClose={handleDismissNotification} severity={lastError?.type}>
 					{lastError?.message}
 				</Alert>

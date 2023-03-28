@@ -1,18 +1,12 @@
+import ws from 'ws';
+
 export interface IUser {
 	id: string;
 	name: string;
 	isHost: boolean;
-	gameId?: string;
+	room: ws.WebSocket | undefined;
 	connected: boolean;
 
-	players?: Player[];
-
 	makeHost: (isHost: boolean) => void;
-}
-
-export interface Player {
-	id: string;
-	name: string;
-	connected?: boolean;
-	buzzed?: string;
+	addRoom: (room: ws.WebSocket) => void;
 }
