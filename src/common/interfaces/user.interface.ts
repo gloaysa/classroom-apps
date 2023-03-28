@@ -6,7 +6,10 @@ export interface IUser {
 	isHost: boolean;
 	room: ws.WebSocket | undefined;
 	connected: boolean;
+	updatedAt: string | undefined;
 
 	makeHost: (isHost: boolean) => void;
 	addRoom: (room: ws.WebSocket) => void;
+
+	updateUser: (updatedAt: string | undefined) => void;
 }

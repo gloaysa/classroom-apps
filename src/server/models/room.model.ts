@@ -12,6 +12,10 @@ export class RoomModel implements IRoom {
 		this.host = host;
 	}
 
+	getUsers(): IUser[] {
+		return this.users.sort(this.sortByDate);
+	}
+
 	addUser(user: IUser): void {
 		const userAlreadyJoined = this.users.find(({ id }) => user.id === id);
 		if (userAlreadyJoined || user.isHost) {
@@ -32,5 +36,20 @@ export class RoomModel implements IRoom {
 
 	broadcastToHost(message: IWsMessage) {
 		this.host.room?.send(message.getString());
+	}
+
+	sortByDate(first: IUser, second: IUser) {
+		if (first.updatedAt === undefined && second.updatedAt === undefined) {
+			return 0;
+		}
+		if (first.updatedAt === undefined) {
+			return 1;
+		}
+		if (second.updatedAt === undefined) {
+			return -1;
+		}
+		const firstDate = new Date(first.updatedAt).getTime();
+		const secondDate = new Date(second.updatedAt).getTime();
+		return firstDate - secondDate;
 	}
 }

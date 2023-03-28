@@ -8,7 +8,7 @@ import roomReducer from './reducers/room.reducer';
 const rootReducer = combineReducers({
 	main: mainReducer,
 	room: roomReducer,
-	config: configReducer,
+	buzzerGame: configReducer,
 	user: userReducer,
 });
 

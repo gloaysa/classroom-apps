@@ -3,15 +3,19 @@ import { IUser } from '../../../common';
 import { RoomService } from '../../services/room/room.service';
 import { IRoom } from '../../../common/interfaces/room.interface';
 import { UserService } from '../../services/user/user.service';
-import { ErrorMessages, RoomMessages, UserMessages } from '../../../common/interfaces/messages';
+import { ErrorMessages, RoomMessages } from '../../../common/interfaces/messages';
 import ShortUniqueId from 'short-unique-id';
 import { ClientMessagesTypes } from '../../../common/interfaces/messages/client-messages.interface';
 import { WsMessage } from '../../../common/models/ws-message.model';
 import { ClientMessage } from '../../../common/models/client-message.model';
+import { BuzzerService } from '../../services/games/buzzer.service';
 
 const roomService = RoomService.getInstance();
 const userService = UserService.getInstance();
 const uniqueIdGenerator = new ShortUniqueId({ length: 4 });
+
+// GAMES
+const buzzerGame = BuzzerService.getInstance();
 
 export const roomRoute = (expressWs: express_ws.Instance) => {
 	const { app } = expressWs;
@@ -43,61 +47,31 @@ export const roomRoute = (expressWs: express_ws.Instance) => {
 		const roomId = req.params.roomId?.toString();
 		const userId = req.query.userId?.toString();
 		try {
-			const user: IUser | undefined = userService.getUserById(userId);
-
-			if (!user) {
-				const clientMessage = new ClientMessage(ClientMessagesTypes.Error, `User ${userId} not found when joining room ${roomId}`).getString();
-				console.error(clientMessage);
-				client.send(clientMessage);
-				client.close();
-				return;
-			}
+			const { user, room } = handleMissingUserOrRoom(userId, roomId);
 
 			user.connected = true;
-			const room: IRoom | undefined = roomService.getRoomById(roomId);
-
-			if (!room) {
-				const clientMessage = new ClientMessage(ClientMessagesTypes.Error, `Game ${roomId} does not exist!`).getString();
-				console.error(clientMessage);
-				client.send(clientMessage);
-				client.close();
-				return;
-			}
 			user.addRoom(client);
 			room.addUser(user);
 
-			let message = new WsMessage(RoomMessages.RoomUserJoined, user);
+			const hostMessage = new WsMessage(RoomMessages.RoomAllRoomPlayers, room.getUsers());
+			room.broadcastToHost(hostMessage);
 
-			if (user.isHost) {
-				message = new WsMessage(RoomMessages.RoomAllRoomPlayers, room.users);
-			}
-
-			room.broadcastToHost(message);
-			console.info(message);
 			const clientMessage = new ClientMessage(ClientMessagesTypes.Success, `Joined room ${roomId}`).getString();
 			client.send(clientMessage);
 		} catch (e) {
-			const clientMessage = new ClientMessage(ClientMessagesTypes.Error, `Couldn't join ${roomId}, try again later`);
-			client.send(clientMessage.getString());
+			client.send(JSON.stringify(e));
 			client.close();
-			console.error(`Not possible to connect client to room ${roomId}: ${e}`);
 		}
 
 		client.on('message', (msg) => {
 			try {
-				const room = roomService.getRoomById(roomId);
-				if (!room) {
-					client.send('room does not exist');
-					return;
-				}
-
-				const message = new WsMessage(UserMessages.UserJoinGame, `message for all people in ${roomId}`);
-				console.info(message);
-				room.broadcastToPlayers(message);
+				const { user, room } = handleMissingUserOrRoom(userId, roomId);
+				console.log(msg);
+				buzzerGame.handlePlayerMessages(user, room, JSON.parse(msg as any));
 			} catch (e) {
-				const clientMessage = new ClientMessage(ClientMessagesTypes.Error, `An error has occurred :(`);
-				client.send(clientMessage.getString());
-				console.error(`There was an error handling the message: ${msg}: ${e}`);
+				const clientMessage = new ClientMessage(ClientMessagesTypes.Error, `There was an error handling message ${msg}: ${e}`).getString();
+				console.log(clientMessage);
+				client.send(clientMessage);
 			}
 		});
 
@@ -123,3 +97,19 @@ export const roomRoute = (expressWs: express_ws.Instance) => {
 		});
 	});
 };
+
+function handleMissingUserOrRoom(userId: string | undefined, roomId: string): { user: IUser; room: IRoom } {
+	const user: IUser | undefined = userService.getUserById(userId);
+	const room: IRoom | undefined = roomService.getRoomById(roomId);
+	if (!user) {
+		const clientMessage = new ClientMessage(ClientMessagesTypes.Error, `User ${userId} not found when joining room ${roomId}`).getString();
+		console.error(clientMessage);
+		throw new Error(clientMessage);
+	}
+	if (!room) {
+		const clientMessage = new ClientMessage(ClientMessagesTypes.Error, `Game ${roomId} does not exist!`).getString();
+		console.error(clientMessage);
+		throw new Error(clientMessage);
+	}
+	return { user, room };
+}

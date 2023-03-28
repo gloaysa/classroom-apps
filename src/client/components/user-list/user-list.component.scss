@@ -4,22 +4,32 @@
 
 	.user-list__user {
 		display: flex;
+		justify-content: center;
+		align-items: center;
 		width: 100%;
+		margin-bottom: 5px;
+		text-transform: capitalize;
+		font-size: 20px;
 
 		&-number {
-			margin-right: 15px;
+			margin-right: 5px;
 		}
 
 		&-name {
 			width: 100%;
+			padding: 5px;
+		}
+
+		&--waiting {
+			background-color: grey;
+		}
+
+		&--ready {
+			background-color: red;
 		}
 
 		&--buzzed {
 			background-color: green;
-		}
-
-		&--no-buzzed {
-			background-color: red;
 		}
 	}
 }

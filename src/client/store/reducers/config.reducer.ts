@@ -2,17 +2,17 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { RootState } from '../store';
 
 // Define a type for the slice state
-interface ConfigState {
+interface BuzzerGameState {
 	buzzerOn: boolean;
 }
 
 // Define the initial state using that type
-const initialState: ConfigState = {
+const initialState: BuzzerGameState = {
 	buzzerOn: false,
 };
 
-export const configSlice = createSlice({
-	name: 'config',
+export const buzzerGameSlice = createSlice({
+	name: 'buzzerGame',
 	initialState,
 	reducers: {
 		setBuzzerOnOff: (state, action: PayloadAction<boolean>) => {
@@ -21,8 +21,8 @@ export const configSlice = createSlice({
 	},
 });
 
-export const { setBuzzerOnOff } = configSlice.actions;
+export const { setBuzzerOnOff } = buzzerGameSlice.actions;
 
-export const selectBuzzerOnOff = (state: RootState): boolean => state.config.buzzerOn;
+export const selectBuzzerOnOff = (state: RootState): boolean => state.buzzerGame.buzzerOn;
 
-export default configSlice.reducer;
+export default buzzerGameSlice.reducer;

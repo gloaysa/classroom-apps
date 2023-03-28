@@ -9,8 +9,9 @@ import { useBuzzerSocketHook } from '../../hooks/use-buzzer-socket.hook';
 import { BuzzerRoutes } from './buzzer.router';
 import { setLastMessageAction } from '../../store/reducers/main.reducer';
 import { ClientMessagesTypes } from '../../../common/interfaces/messages/client-messages.interface';
-import { RoomMessages } from '../../../common/interfaces/messages';
-import { removePlayerAction, setPlayerAction, setPlayersAction } from '../../store/reducers/room.reducer';
+import { BuzzerMessages, RoomMessages } from '../../../common/interfaces/messages';
+import { removePlayerAction, setPlayersAction } from '../../store/reducers/room.reducer';
+import { setBuzzerOnOff } from '../../store/reducers/config.reducer';
 
 const BuzzerRoomGame = () => {
 	const dispatch = useDispatch();
@@ -32,14 +33,17 @@ const BuzzerRoomGame = () => {
 						navigate(BuzzerRoutes.Lobby);
 					}
 					break;
-				case RoomMessages.RoomUserJoined:
-					dispatch(setPlayerAction(message));
-					break;
 				case RoomMessages.RoomAllRoomPlayers:
 					dispatch(setPlayersAction(message));
 					break;
 				case RoomMessages.RoomUserDisconnected:
 					dispatch(removePlayerAction(message));
+					break;
+				case BuzzerMessages.BuzzerOnOff:
+					dispatch(setBuzzerOnOff(message));
+					break;
+				case BuzzerMessages.BuzzerBuzzed:
+					dispatch(setPlayersAction(message));
 					break;
 			}
 			console.log(lastJsonMessage);
@@ -50,7 +54,11 @@ const BuzzerRoomGame = () => {
 		return null;
 	}
 
-	return <Container>{currentUser.isHost ? <BuzzerHost /> : <BuzzerPlayer />}</Container>;
+	return (
+		<Container>
+			{currentUser.isHost ? <BuzzerHost sendMessage={sendJsonMessage} /> : <BuzzerPlayer player={currentUser} sendMessage={sendJsonMessage} />}
+		</Container>
+	);
 };
 
 export default BuzzerRoomGame;
