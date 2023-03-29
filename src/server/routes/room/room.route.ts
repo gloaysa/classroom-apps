@@ -3,7 +3,7 @@ import { IUser } from '../../../common';
 import { RoomService } from '../../services/room/room.service';
 import { IRoom } from '../../../common/interfaces/room.interface';
 import { UserService } from '../../services/user/user.service';
-import { ErrorMessages, RoomMessages } from '../../../common/interfaces/messages';
+import { BuzzerMessages, ErrorMessages, RoomMessages } from '../../../common/interfaces/messages';
 import ShortUniqueId from 'short-unique-id';
 import { ClientMessagesTypes } from '../../../common/interfaces/messages/client-messages.interface';
 import { WsMessage } from '../../../common/models/ws-message.model';
@@ -66,8 +66,12 @@ export const roomRoute = (expressWs: express_ws.Instance) => {
 		client.on('message', (msg) => {
 			try {
 				const { user, room } = handleMissingUserOrRoom(userId, roomId);
-				console.log(msg);
-				buzzerGame.handlePlayerMessages(user, room, JSON.parse(msg as any));
+				const message = JSON.parse(msg as any);
+				console.info(`Message received from ${user.name} - ${user.id}: ${msg}`);
+
+				if (Object.values(BuzzerMessages).includes(message.type)) {
+					buzzerGame.handlePlayerMessages(user, room, message);
+				}
 			} catch (e) {
 				const clientMessage = new ClientMessage(ClientMessagesTypes.Error, `There was an error handling message ${msg}: ${e}`).getString();
 				console.log(clientMessage);
@@ -88,7 +92,7 @@ export const roomRoute = (expressWs: express_ws.Instance) => {
 				user.connected = false;
 
 				if (room) {
-					const hostMessage = new WsMessage(RoomMessages.RoomUserDisconnected, user);
+					const hostMessage = new WsMessage(RoomMessages.RoomAllRoomPlayers, room.getUsers());
 					room.broadcastToHost(hostMessage);
 				}
 			} catch (e) {

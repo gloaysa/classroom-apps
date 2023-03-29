@@ -40,7 +40,6 @@ const App: FunctionComponent = () => {
 			deleteUser(userId).then(() => {
 				setUserId(undefined);
 				dispatch(cleanStateAction());
-				console.log('called');
 				const params = { redirectUrl: currentPath };
 				navigate({
 					pathname: MainRoutes.Login,

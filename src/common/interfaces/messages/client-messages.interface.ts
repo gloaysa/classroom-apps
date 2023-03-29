@@ -7,7 +7,7 @@ export enum ClientMessagesTypes {
 export interface IClientMessages {
 	[key: string]: any | undefined;
 	type: ClientMessagesTypes;
-	message: string;
+	data: string;
 
 	getString: () => string;
 }

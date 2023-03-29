@@ -46,9 +46,14 @@ const BuzzerRoomGame = () => {
 					dispatch(setPlayersAction(message));
 					break;
 			}
-			console.log(lastJsonMessage);
 		}
 	}, [lastJsonMessage]);
+
+	useEffect(() => {
+		if (currentUser) {
+			sendJsonMessage({ type: BuzzerMessages.BuzzerUserJoined });
+		}
+	}, [currentUser]);
 
 	if (!currentUser) {
 		return null;

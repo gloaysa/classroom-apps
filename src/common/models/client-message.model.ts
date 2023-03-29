@@ -2,14 +2,14 @@ import { ClientMessagesTypes, IClientMessages } from '../interfaces/messages/cli
 
 export class ClientMessage implements IClientMessages {
 	type: ClientMessagesTypes;
-	message: string;
+	data: string;
 
 	getString(): string {
-		return JSON.stringify({ type: this.type, message: this.message });
+		return JSON.stringify({ type: this.type, message: this.data });
 	}
 
 	constructor(type: ClientMessagesTypes, message: string) {
 		this.type = type;
-		this.message = message;
+		this.data = message;
 	}
 }

@@ -24,12 +24,17 @@ const BuzzerHost: FunctionComponent<IBuzzerHost> = ({ sendMessage }) => {
 			<CssBaseline />
 			<FormControlLabel
 				disabled={!players?.length}
-				control={<Switch defaultChecked={buzzerOn} onChange={handleBuzzerSwitch} />}
+				control={<Switch checked={buzzerOn} onChange={handleBuzzerSwitch} />}
 				label="Buzzers are..."
 				labelPlacement="start"
 			/>
 			<Box sx={{ marginTop: '15px' }}>
-				<UserListComponent players={players} buzzerOn={buzzerOn} />
+				Connected players
+				<UserListComponent players={players.filter((player) => player.connected)} buzzerOn={buzzerOn} />
+			</Box>
+			<Box sx={{ marginTop: '15px' }}>
+				Disconnected players
+				<UserListComponent players={players.filter((player) => !player.connected)} buzzerOn={buzzerOn} />
 			</Box>
 		</Container>
 	);

@@ -37,15 +37,5 @@ export class BuzzerService {
 				user.room?.send(new WsMessage(BuzzerMessages.BuzzerOnOff, this.buzzersAreOpen).getString());
 				break;
 		}
-		console.log(msg);
 	}
-}
-
-interface BuzzList {
-	[key: string]: Buzz[];
-}
-
-interface Buzz {
-	buzzedAt: string;
-	user: IUser;
 }

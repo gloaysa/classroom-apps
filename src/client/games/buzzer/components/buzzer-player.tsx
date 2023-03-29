@@ -16,7 +16,6 @@ const BuzzerPlayer: FunctionComponent<IBuzzerPlayer> = ({ sendMessage, player })
 	const buzzerOn = useSelector(selectBuzzerOnOff);
 
 	useEffect(() => {
-		sendMessage({ type: BuzzerMessages.BuzzerUserJoined });
 		const userHasBuzzed = !!player.updatedAt;
 		if (buzzerOn) {
 			setBuzzerState('ready');
