@@ -17,7 +17,7 @@ const AppBarComponent: FunctionComponent<IAppBar> = ({ userName, onUserLogout, o
 		<Box sx={{ flexGrow: 1, marginBottom: '20px' }}>
 			<AppBar position="static">
 				<Toolbar>
-					<IconButton onClick={onUserLogout} size="large" edge="start" color="inherit" aria-label="menu" sx={{ mr: 2 }}>
+					<IconButton onClick={onClickUsername} size="large" edge="start" color="inherit" aria-label="menu" sx={{ mr: 2 }}>
 						{userName}
 					</IconButton>
 					<Typography variant="h6" component="div" sx={{ flexGrow: 1, textAlign: 'center' }}></Typography>
