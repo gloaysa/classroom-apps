@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { Button, Container, CssBaseline } from '@mui/material';
-import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import { useSelector } from 'react-redux';
 import { selectUser } from '../../store/reducers/user.reducer';
 import { BuzzerRoutes } from './buzzer.router';
@@ -53,11 +52,6 @@ const BuzzerLobbyGame = () => {
 				<Button onClick={handleGoToCreateGame}>Create new game</Button>
 			);
 		}
-		return (
-			<Button onClick={handleGoToLobby} startIcon={<ArrowBackIosIcon />}>
-				Back
-			</Button>
-		);
 	};
 
 	return (

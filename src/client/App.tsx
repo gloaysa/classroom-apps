@@ -3,7 +3,7 @@ import { selectUser } from './store/reducers/user.reducer';
 import { createSearchParams, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { MainRoutes } from './index.router';
 import { DashboardRoutes } from './pages/dashboard/dashboard.router';
-import { Alert, Box, Snackbar } from '@mui/material';
+import { Alert, Box, Button, Snackbar } from '@mui/material';
 import { useGetUserIdHook } from './hooks/use-get-user-id.hook';
 import { useUserHook } from './hooks/use-user.hook';
 import { useSelector } from 'react-redux';
@@ -11,6 +11,7 @@ import AppBarComponent from './components/app-bar/app-bar.component';
 import { selectLastMessage } from './store/reducers/main.reducer';
 import { useAppDispatch } from './hooks/app-store.hook';
 import { ClientMessagesTypes, MainActions, MainActionTypes } from '../common/actions/main.actions';
+import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 
 const App: FunctionComponent = () => {
 	const dispatch = useAppDispatch();
@@ -84,6 +85,9 @@ const App: FunctionComponent = () => {
 					{lastError?.data}
 				</Alert>
 			</Snackbar>
+			<Button onClick={() => navigate(-1)} startIcon={<ArrowBackIosIcon />}>
+				{' '}
+			</Button>
 			<Outlet />
 		</Box>
 	);

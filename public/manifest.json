@@ -1,13 +1,13 @@
 {
 	"$schema": "https://json.schemastore.org/web-manifest-combined.json",
 	"name": "Classroom Apps",
-	"short_name": "CApps",
+	"short_name": "Classroom Apps",
 	"description": "A collection of apps for the classroom",
 	"display": "standalone",
 	"start_url": "/",
-	"theme_color": "#1976D2",
-	"background_color": "#1976D2",
-	"id": "@gloaysa/classroom-apps",
+	"theme_color": "#1976d2",
+	"background_color": "#1976d2",
+	"id": "@gloaysa/classroom-apps-v2",
 	"scope": "./",
 	"icons": [
 		{
