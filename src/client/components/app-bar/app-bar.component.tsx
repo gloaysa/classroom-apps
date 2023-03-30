@@ -48,17 +48,17 @@ const AppBarComponent: FunctionComponent<IAppBar> = ({ userName, onUserLogout, o
 	};
 
 	return (
-		<AppBar position="fixed" sx={{ top: 'auto', bottom: 0 }}>
+		<AppBar position="fixed" sx={{ top: 'auto', bottom: 0 }} color="transparent">
 			<Toolbar sx={styles.toolbar}>
 				<Box sx={styles.appBarLeft}></Box>
 				<Box sx={styles.appBarCenter}>
-					<IconButton color="inherit" onClick={onClickUsername} aria-label={userName} sx={{ margin: 0 }}>
+					<IconButton onClick={onClickUsername} aria-label={userName} sx={{ margin: 0 }}>
 						{userName}
 					</IconButton>
 				</Box>
 				<Box sx={styles.appBarRight}>
 					{userName ? (
-						<IconButton color="inherit" onClick={onUserLogout}>
+						<IconButton onClick={onUserLogout}>
 							<ExitToAppIcon />
 						</IconButton>
 					) : null}
