@@ -48,6 +48,14 @@ export const useUserHook = (dispatch: Dispatch) => {
 		const userAction: UserActions = await response.json();
 		setLoading(false);
 		dispatch(userAction);
+		const notification: MainActions = {
+			type: MainActionTypes.SetMessage,
+			payload: {
+				type: ClientMessagesTypes.Success,
+				data: `${userAction.payload?.name} logged in!`,
+			},
+		};
+		dispatch(notification);
 		return userAction;
 	}, []);
 

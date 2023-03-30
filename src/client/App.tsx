@@ -10,8 +10,7 @@ import { useSelector } from 'react-redux';
 import AppBarComponent from './components/app-bar/app-bar.component';
 import { selectLastMessage } from './store/reducers/main.reducer';
 import { useAppDispatch } from './hooks/app-store.hook';
-import { UserActionTypes } from '../common/actions/user.actions';
-import { ClientMessagesTypes, MainActionTypes } from '../common/actions/main.actions';
+import { ClientMessagesTypes, MainActions, MainActionTypes } from '../common/actions/main.actions';
 
 const App: FunctionComponent = () => {
 	const dispatch = useAppDispatch();
@@ -43,13 +42,20 @@ const App: FunctionComponent = () => {
 	const handleLogout = () => {
 		if (userId) {
 			deleteUser(userId).then(() => {
-				setUserId(undefined);
-				dispatch({ type: UserActionTypes.RemoveUser });
-				const params = { redirectUrl: currentPath };
-				navigate({
-					pathname: MainRoutes.Login,
-					search: createSearchParams(params).toString(),
-				});
+				const notification: MainActions = {
+					type: MainActionTypes.SetMessage,
+					payload: {
+						type: ClientMessagesTypes.Success,
+						data: `${currentUser?.name} logged out!`,
+					},
+				};
+				dispatch(notification);
+			});
+			setUserId(undefined);
+			const params = { redirectUrl: currentPath };
+			navigate({
+				pathname: MainRoutes.Login,
+				search: createSearchParams(params).toString(),
 			});
 		}
 	};

@@ -6,17 +6,16 @@ import BuzzerHost from './components/buzzer-host';
 import BuzzerPlayer from './components/buzzer-player';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useBuzzerSocketHook } from '../../hooks/use-buzzer-socket.hook';
-import { useAppDispatch } from '../../hooks/app-store.hook';
 import { BuzzerGameActionTypes } from '../../../common/actions/buzzer-game.actions';
 import { BuzzerRoutes } from './buzzer.router';
 import { ErrorActionTypes } from '../../../common/actions/error.actions';
+import { MainRoutes } from '../../index.router';
 
 const BuzzerRoomGame = () => {
-	const dispatch = useAppDispatch();
 	const navigate = useNavigate();
 	const currentUser = useSelector(selectUser);
 	const { gameId } = useParams();
-	const { sendActionMessage, lastMessage } = useBuzzerSocketHook(currentUser, gameId, dispatch);
+	const { sendActionMessage, action } = useBuzzerSocketHook(currentUser, gameId);
 
 	useEffect(() => {
 		if (currentUser) {
@@ -25,10 +24,13 @@ const BuzzerRoomGame = () => {
 	}, [currentUser]);
 
 	useEffect(() => {
-		if (lastMessage?.type === ErrorActionTypes.RoomDoesNotExist) {
+		if (action?.type === ErrorActionTypes.RoomDoesNotExist) {
 			navigate(BuzzerRoutes.Lobby);
 		}
-	}, [lastMessage]);
+		if (action?.type === ErrorActionTypes.UserDoesNotExist) {
+			navigate(MainRoutes.Login);
+		}
+	}, [action]);
 
 	if (!currentUser) {
 		return null;
