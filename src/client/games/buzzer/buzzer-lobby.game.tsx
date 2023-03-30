@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Button, Container, CssBaseline } from '@mui/material';
+import React from 'react';
+import { Container, CssBaseline } from '@mui/material';
 import { useSelector } from 'react-redux';
 import { selectUser } from '../../store/reducers/user.reducer';
 import { BuzzerRoutes } from './buzzer.router';
@@ -10,7 +10,6 @@ import { useAppDispatch } from '../../hooks/app-store.hook';
 import { UserActionTypes } from '../../../common/actions/user.actions';
 
 const BuzzerLobbyGame = () => {
-	const [createGameMode, setCreateGameMode] = useState<boolean>(false);
 	const navigate = useNavigate();
 	const dispatch = useAppDispatch();
 	const currentUser = useSelector(selectUser);
@@ -20,18 +19,6 @@ const BuzzerLobbyGame = () => {
 
 	const handleJoinGame = (code: string) => {
 		navigate(`${BuzzerRoutes.Lobby}/${code}`);
-	};
-
-	const handleGoToCreateGame = () => {
-		setCreateGameMode(true);
-	};
-
-	const handleGoToJoinGame = () => {
-		setCreateGameMode(false);
-	};
-
-	const handleGoToLobby = () => {
-		navigate(BuzzerRoutes.Lobby);
 	};
 
 	const handleCreateGame = () => {
@@ -44,22 +31,11 @@ const BuzzerLobbyGame = () => {
 		}
 	};
 
-	const navigationButton = () => {
-		if (currentPageIsLobby) {
-			return createGameMode ? (
-				<Button onClick={handleGoToJoinGame}>Join game</Button>
-			) : (
-				<Button onClick={handleGoToCreateGame}>Create new game</Button>
-			);
-		}
-	};
-
 	return (
 		<Container>
 			<CssBaseline />
-			{navigationButton()}
 
-			{currentPageIsLobby ? <BuzzerGameSelector onCreateGame={handleCreateGame} createGameMode={createGameMode} onJoinGame={handleJoinGame} /> : null}
+			{currentPageIsLobby ? <BuzzerGameSelector onCreateGame={handleCreateGame} onJoinGame={handleJoinGame} /> : null}
 
 			<Outlet />
 		</Container>
