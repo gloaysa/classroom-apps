@@ -72,9 +72,14 @@ const App: FunctionComponent = () => {
 		dispatch({ type: MainActionTypes.SetMessage });
 	};
 
+	const navigationBar = () => {
+		if (currentPath !== MainRoutes.Login && currentPath !== MainRoutes.Home) {
+			return <Button onClick={() => navigate(-1)} startIcon={<ArrowBackIosIcon />} />;
+		}
+	};
+
 	return (
 		<Box component="main" maxWidth="l">
-			<AppBarComponent userName={currentUser?.name} onUserLogout={handleLogout} onClickUsername={handleOnClickUsername} />
 			<Snackbar
 				onClose={handleDismissNotification}
 				anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
@@ -85,10 +90,9 @@ const App: FunctionComponent = () => {
 					{lastError?.data}
 				</Alert>
 			</Snackbar>
-			<Button onClick={() => navigate(-1)} startIcon={<ArrowBackIosIcon />}>
-				{' '}
-			</Button>
+			{navigationBar()}
 			<Outlet />
+			<AppBarComponent userName={currentUser?.name} onUserLogout={handleLogout} onClickUsername={handleOnClickUsername} />
 		</Box>
 	);
 };
