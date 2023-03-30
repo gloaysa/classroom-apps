@@ -17,7 +17,7 @@ const BuzzerGameSelector: FunctionComponent<IBuzzerGameSelector> = ({ onCreateGa
 			element: <GameSelectorJoin onJoinGame={onJoinGame} />,
 		},
 		{
-			title: 'Create new Game',
+			title: 'Create Game',
 			element: <GameSelectorHost onCreateGame={onCreateGame} />,
 		},
 	];

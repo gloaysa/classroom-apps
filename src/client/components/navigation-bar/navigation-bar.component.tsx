@@ -28,7 +28,7 @@ const NavigationBarComponent = () => {
 
 const styles: Record<string, SxProps> = {
 	navigation: {
-		posion: 'fixed',
+		position: 'fixed',
 		top: 0,
 		bottom: 'auto',
 		display: 'flex',

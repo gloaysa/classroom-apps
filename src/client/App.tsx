@@ -85,10 +85,19 @@ const App: FunctionComponent = () => {
 				</Alert>
 			</Snackbar>
 			<NavigationBarComponent />
-			<Outlet />
+			<Box sx={styles.app}>
+				<Outlet />
+			</Box>
 			<AppBarComponent userName={currentUser?.name} onUserLogout={handleLogout} onClickUsername={handleOnClickUsername} />
 		</Box>
 	);
+};
+
+const styles = {
+	app: {
+		marginTop: '53px',
+		marginBottom: '100px',
+	},
 };
 
 export default App;
