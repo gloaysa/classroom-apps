@@ -34,12 +34,19 @@ const BuzzerHost: FunctionComponent<IBuzzerHost> = ({ sendMessage }) => {
 				labelPlacement="start"
 			/>
 			<Box sx={{ marginTop: '15px' }}>
-				Connected players
-				<UserListComponent players={players.filter((player) => player.connected)} buzzerOn={buzzerOn} />
+				<UserListComponent
+					players={players.filter((player) => player.connected)}
+					buzzerOn={buzzerOn}
+					showStar={buzzerOn}
+					listName="Connected players"
+				/>
 			</Box>
 			<Box sx={{ marginTop: '15px' }}>
-				Disconnected players
-				<UserListComponent players={players.filter((player) => !player.connected)} buzzerOn={buzzerOn} />
+				<UserListComponent
+					players={players.filter((player) => !player.connected)}
+					buzzerOn={buzzerOn}
+					listName="Disconnected players"
+				/>
 			</Box>
 		</Container>
 	);

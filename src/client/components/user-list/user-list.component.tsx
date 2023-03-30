@@ -1,37 +1,84 @@
-import React, { FunctionComponent, useState } from 'react';
+import React, { FunctionComponent } from 'react';
 import './user-list.component.scss';
-import { BuzzerState } from '../buzzer/buzzer.component';
 import { IUser } from '../../../common/interfaces/user.interface';
+import { List, ListItem, ListItemButton, ListItemIcon, ListItemText } from '@mui/material';
+import StarIcon from '@mui/icons-material/Star';
 
 interface IUserListComponent {
 	players: IUser[];
+	listName: string;
+	showStar?: boolean;
 	buzzerOn: boolean;
 }
-const UserListComponent: FunctionComponent<IUserListComponent> = ({ players, buzzerOn }) => {
-	const [buzzerState, setBuzzerState] = useState<BuzzerState>('waiting');
-
-	const getBuzzerState = (player: IUser) => {
+const UserListComponent: FunctionComponent<IUserListComponent> = ({
+	players,
+	buzzerOn,
+	listName,
+	showStar,
+}) => {
+	const getListItemColor = (player: IUser) => {
 		const userHasBuzzed = !!player.updatedAt;
 		if (userHasBuzzed && buzzerOn) {
-			return 'buzzed';
+			return 'transparent';
 		}
 		if (buzzerOn) {
-			return 'ready';
+			return '#fd856b';
 		}
 		if (!buzzerOn) {
-			return 'waiting';
+			return 'transparent';
 		}
 	};
 
+	if (!players.length) {
+		return null;
+	}
+
+	const starIconColor = (position: number): 'gold' | 'silver' | '#CD7F32' | undefined => {
+		if (position === 0) {
+			return 'gold';
+		}
+		if (position === 1) {
+			return 'silver';
+		}
+		if (position === 2) {
+			return '#CD7F32';
+		}
+	};
+	const shouldDisplayStar = (userHasBuzzed: boolean, position: number): boolean => {
+		if (!userHasBuzzed) {
+			return false;
+		}
+		return !!showStar && position < 3;
+	};
+	const shouldIndent = (userHasBuzzed: boolean, position: number): boolean => {
+		if (!showStar) {
+			return false;
+		}
+		return !shouldDisplayStar(userHasBuzzed, position);
+	};
+
 	return (
-		<div className="user-list">
-			{players.map((player, index) => (
-				<div key={player.id} className="user-list__user">
-					<div className="user-list__user-number">{index + 1}</div>
-					<div className={'user-list__user-name ' + ('user-list__user--' + getBuzzerState(player))}>{player.name}</div>
-				</div>
-			))}
-		</div>
+		<List sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }} aria-label="contacts">
+			<ListItemText primary={listName} />
+			{players.map((player, index) => {
+				return (
+					<ListItem
+						disablePadding
+						key={`${player.name}-${index}`}
+						sx={{ backgroundColor: getListItemColor(player) }}
+					>
+						<ListItemButton>
+							{shouldDisplayStar(!!player.updatedAt, index) ? (
+								<ListItemIcon sx={{ color: starIconColor(index) }}>
+									<StarIcon />
+								</ListItemIcon>
+							) : null}
+							<ListItemText inset={shouldIndent(!!player.updatedAt, index)} primary={player.name} />
+						</ListItemButton>
+					</ListItem>
+				);
+			})}
+		</List>
 	);
 };
 

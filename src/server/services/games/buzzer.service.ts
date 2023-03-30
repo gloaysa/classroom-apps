@@ -29,13 +29,19 @@ export class BuzzerService {
 				this.setBuzzers(room, action.payload);
 				room.broadcastToPlayers({ type: BuzzerGameActionTypes.SetBuzzerOnOff, payload: action.payload });
 				room.broadcastToHost({ type: BuzzerGameActionTypes.SetBuzzerOnOff, payload: action.payload });
+				room.broadcastToHost({ type: RoomActionTypes.SetPlayers, payload: room.getUsers() });
 				break;
 			case BuzzerGameActionTypes.BuzzerBuzzed:
 				user.updateUser(new Date().toISOString());
 				room.broadcastToHost({ type: RoomActionTypes.SetPlayers, payload: room.getUsers() });
 				break;
 			case BuzzerGameActionTypes.BuzzerUserJoined:
-				user.room?.send(new MessageModel({ type: BuzzerGameActionTypes.SetBuzzerOnOff, payload: this.buzzersAreOpen }).toString());
+				user.room?.send(
+					new MessageModel({
+						type: BuzzerGameActionTypes.SetBuzzerOnOff,
+						payload: this.buzzersAreOpen,
+					}).toString()
+				);
 				break;
 		}
 	}
