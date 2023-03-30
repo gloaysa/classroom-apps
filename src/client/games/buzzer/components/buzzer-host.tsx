@@ -1,22 +1,27 @@
-import React, { FunctionComponent } from 'react';
+import React, { FunctionComponent, useEffect, useState } from 'react';
 import { Box, Container, CssBaseline, FormControlLabel, Switch } from '@mui/material';
 import { useSelector } from 'react-redux';
 import UserListComponent from '../../../components/user-list/user-list.component';
 import { selectPlayers } from '../../../store/reducers/room.reducer';
-import { SendJsonMessage } from 'react-use-websocket/src/lib/types';
-import { BuzzerMessages } from '../../../../common/interfaces/messages';
-import { selectBuzzerOnOff } from '../../../store/reducers/config.reducer';
+import { selectBuzzerOnOff } from '../../../store/reducers/buzzer.reducer';
+import { BuzzerGameActionTypes } from '../../../../common/actions/buzzer-game.actions';
+import { StoreActions } from '../../../../common/actions';
 
 interface IBuzzerHost {
-	sendMessage: SendJsonMessage;
+	sendMessage: (action: StoreActions) => void;
 }
 
 const BuzzerHost: FunctionComponent<IBuzzerHost> = ({ sendMessage }) => {
+	const [switchOn, setSwitchOn] = useState(false);
 	const players = useSelector(selectPlayers);
 	const buzzerOn = useSelector(selectBuzzerOnOff);
 
+	useEffect(() => {
+		setSwitchOn(buzzerOn);
+	}, [buzzerOn]);
+
 	const handleBuzzerSwitch = (event: React.ChangeEvent<HTMLInputElement>) => {
-		sendMessage({ type: BuzzerMessages.BuzzerOnOff, data: event.target.checked });
+		sendMessage({ type: BuzzerGameActionTypes.SetBuzzerOnOff, payload: event.target.checked });
 	};
 
 	return (
@@ -24,7 +29,7 @@ const BuzzerHost: FunctionComponent<IBuzzerHost> = ({ sendMessage }) => {
 			<CssBaseline />
 			<FormControlLabel
 				disabled={!players?.length}
-				control={<Switch checked={buzzerOn} onChange={handleBuzzerSwitch} />}
+				control={<Switch checked={switchOn} onChange={handleBuzzerSwitch} />}
 				label="Buzzers are..."
 				labelPlacement="start"
 			/>

@@ -1,12 +1,12 @@
 import { IUser } from './user.interface';
-import { IWsMessage } from './i-ws.message';
+import { StoreActions } from '../actions';
 
 export interface IRoom {
 	id: string;
 	host: IUser;
 
-	broadcastToPlayers(message: IWsMessage): void;
-	broadcastToHost(message: IWsMessage): void;
+	broadcastToPlayers(action: StoreActions): void;
+	broadcastToHost(action: StoreActions): void;
 	addUser(user: IUser): void;
 	removeUser(user: IUser): void;
 	getUsers(): IUser[];

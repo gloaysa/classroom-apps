@@ -1,5 +1,6 @@
+import { StoreActions } from '../../common/actions';
 import { IRoom } from '../../common/interfaces/room.interface';
-import { IUser, IWsMessage } from '../../common';
+import { IUser } from '../../common/interfaces/user.interface';
 
 export class RoomModel implements IRoom {
 	users: IUser[] = [];
@@ -28,14 +29,28 @@ export class RoomModel implements IRoom {
 		this.users = this.users.filter(({ id }) => id !== user.id);
 	}
 
-	broadcastToPlayers(message: IWsMessage) {
+	broadcastToPlayers(message: StoreActions) {
 		this.users.forEach((user) => {
-			user.room?.send(message.getString());
+			user.room?.send(
+				JSON.stringify(message, (key, value) => {
+					if (key === 'room') {
+						return undefined;
+					}
+					return value;
+				})
+			);
 		});
 	}
 
-	broadcastToHost(message: IWsMessage) {
-		this.host.room?.send(message.getString());
+	broadcastToHost(message: StoreActions) {
+		this.host.room?.send(
+			JSON.stringify(message, (key, value) => {
+				if (key === 'room') {
+					return undefined;
+				}
+				return value;
+			})
+		);
 	}
 
 	sortByDate(first: IUser, second: IUser) {

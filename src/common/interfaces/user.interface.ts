@@ -10,6 +10,7 @@ export interface IUser {
 
 	makeHost: (isHost: boolean) => void;
 	addRoom: (room: ws.WebSocket) => void;
+	roomId: string | undefined;
 
 	updateUser: (updatedAt: string | undefined) => void;
 }

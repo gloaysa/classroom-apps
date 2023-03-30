@@ -1,5 +1,5 @@
-import { IUser } from '../../common';
 import ws from 'ws';
+import { IUser } from '../../common/interfaces/user.interface';
 
 export class UserModel implements IUser {
 	readonly id: string;
@@ -8,6 +8,7 @@ export class UserModel implements IUser {
 	connected = false;
 	isHost = false;
 	updatedAt: string | undefined;
+	roomId: string | undefined;
 
 	constructor(id: string, name: string) {
 		this.id = id;

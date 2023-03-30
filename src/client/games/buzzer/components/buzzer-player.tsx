@@ -1,16 +1,17 @@
 import React, { FunctionComponent, useEffect, useState } from 'react';
-import { Box, Container } from '@mui/material';
+import { Box, Container, SxProps } from '@mui/material';
 import { useSelector } from 'react-redux';
-import { selectBuzzerOnOff } from '../../../store/reducers/config.reducer';
 import BuzzerComponent, { BuzzerState } from '../../../components/buzzer/buzzer.component';
-import { SendJsonMessage } from 'react-use-websocket/src/lib/types';
-import { BuzzerMessages } from '../../../../common/interfaces/messages';
-import { IUser } from '../../../../common';
+import { selectBuzzerOnOff } from '../../../store/reducers/buzzer.reducer';
+import { IUser } from '../../../../common/interfaces/user.interface';
+import { BuzzerGameActionTypes } from '../../../../common/actions/buzzer-game.actions';
+import { StoreActions } from '../../../../common/actions';
 
 interface IBuzzerPlayer {
-	sendMessage: SendJsonMessage;
+	sendMessage: (action: StoreActions) => void;
 	player: IUser;
 }
+
 const BuzzerPlayer: FunctionComponent<IBuzzerPlayer> = ({ sendMessage, player }) => {
 	const [buzzerState, setBuzzerState] = useState<BuzzerState>('waiting');
 	const buzzerOn = useSelector(selectBuzzerOnOff);
@@ -31,17 +32,25 @@ const BuzzerPlayer: FunctionComponent<IBuzzerPlayer> = ({ sendMessage, player })
 	const handleClickBuzzer = () => {
 		if (buzzerOn && buzzerState !== 'buzzed') {
 			setBuzzerState('buzzed');
-			sendMessage({ type: BuzzerMessages.BuzzerBuzzed });
+			sendMessage({ type: BuzzerGameActionTypes.BuzzerBuzzed, payload: new Date().toISOString() });
 		}
 	};
 
 	return (
 		<Container>
-			<Box sx={{ marginTop: '85px' }}>
+			<Box sx={styles.buzzerBox}>
 				<BuzzerComponent onClick={handleClickBuzzer} state={buzzerState} />
 			</Box>
 		</Container>
 	);
 };
 
+const styles: Record<string, SxProps> = {
+	buzzerBox: {
+		marginTop: '85px',
+		display: 'flex',
+		justifyContent: 'center',
+		alignItems: 'center',
+	},
+};
 export default BuzzerPlayer;

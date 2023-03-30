@@ -1,6 +1,6 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { RootState } from '../store';
-import { IUser } from '../../../common';
+import { RoomActions, RoomActionTypes } from '../../../common/actions/room.actions';
+import { IUser } from '../../../common/interfaces/user.interface';
 
 // Define a type for the slice state
 interface RoomState {
@@ -14,24 +14,23 @@ const initialState: RoomState = {
 	players: [],
 };
 
-export const roomSlice = createSlice({
-	name: 'room',
-	initialState,
-	reducers: {
-		setPlayersAction: (state, action: PayloadAction<IUser[]>) => {
-			state.players = action.payload;
-		},
-		setPlayerAction: (state, action: PayloadAction<IUser>) => {
-			state.players = [...state.players, action.payload];
-		},
-		removePlayerAction: (state, action: PayloadAction<IUser>) => {
-			state.players = state.players.filter(({ id }) => action.payload.id !== id);
-		},
-	},
-});
-
-export const { setPlayersAction, setPlayerAction, removePlayerAction } = roomSlice.actions;
+const roomReducer = (state = initialState, action: RoomActions): RoomState => {
+	switch (action.type) {
+		case RoomActionTypes.SetPlayers:
+			return {
+				...state,
+				players: action.payload,
+			};
+		case RoomActionTypes.PlayerDisconnected:
+			return {
+				...state,
+				players: state.players.filter(({ id }) => action.payload.id !== id),
+			};
+		default:
+			return state;
+	}
+};
 
 export const selectPlayers = (state: RootState): IUser[] => state.room.players;
 
-export default roomSlice.reducer;
+export default roomReducer;

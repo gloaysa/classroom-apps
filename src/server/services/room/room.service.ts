@@ -1,6 +1,6 @@
-import { IUser } from '../../../common';
 import { IRoom } from '../../../common/interfaces/room.interface';
 import { RoomModel } from '../../models/room.model';
+import { IUser } from '../../../common/interfaces/user.interface';
 
 export class RoomService {
 	private static instance: RoomService;

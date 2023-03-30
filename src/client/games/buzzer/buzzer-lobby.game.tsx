@@ -1,17 +1,19 @@
 import React, { useState } from 'react';
 import { Button, Container, CssBaseline } from '@mui/material';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { selectUser } from '../../store/reducers/user.reducer';
 import { BuzzerRoutes } from './buzzer.router';
 import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { useGameHook } from '../../hooks/use-game.hook';
 import BuzzerGameSelector from './components/buzzer-game-selector';
+import { useAppDispatch } from '../../hooks/app-store.hook';
+import { UserActionTypes } from '../../../common/actions/user.actions';
 
 const BuzzerLobbyGame = () => {
 	const [createGameMode, setCreateGameMode] = useState<boolean>(false);
 	const navigate = useNavigate();
-	const dispatch = useDispatch();
+	const dispatch = useAppDispatch();
 	const currentUser = useSelector(selectUser);
 	const { createGame } = useGameHook(dispatch);
 	const currentPath = useLocation().pathname;
@@ -35,9 +37,9 @@ const BuzzerLobbyGame = () => {
 
 	const handleCreateGame = () => {
 		if (currentUser) {
-			createGame(currentUser).then((gameId) => {
-				if (gameId) {
-					navigate(`${BuzzerRoutes.Lobby}/${gameId}`);
+			createGame(currentUser).then((action) => {
+				if (action.type === UserActionTypes.SetUser) {
+					navigate(`${BuzzerRoutes.Lobby}/${action.payload.roomId}`);
 				}
 			});
 		}

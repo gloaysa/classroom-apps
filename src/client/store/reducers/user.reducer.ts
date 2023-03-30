@@ -1,32 +1,34 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { RootState } from '../store';
-import { IUser } from '../../../common';
+import { UserActions, UserActionTypes } from '../../../common/actions/user.actions';
+import { IUser } from '../../../common/interfaces/user.interface';
 
 // Define a type for the slice state
-interface ConfigState {
+interface UserState {
 	user: IUser | undefined;
 }
 
 // Define the initial state using that type
-const initialState: ConfigState = {
+const initialState: UserState = {
 	user: undefined,
 };
 
-export const userSlice = createSlice({
-	name: 'user',
-	initialState,
-	reducers: {
-		setUserAction: (state, action: PayloadAction<IUser | undefined>) => {
-			state.user = action.payload;
-		},
-		cleanStateAction: (state) => {
-			state.user = undefined;
-		},
-	},
-});
-
-export const { setUserAction, cleanStateAction } = userSlice.actions;
+const userReducer = (state = initialState, action: UserActions): UserState => {
+	switch (action.type) {
+		case UserActionTypes.SetUser:
+			return {
+				...state,
+				user: action.payload,
+			};
+		case UserActionTypes.RemoveUser:
+			return {
+				...state,
+				user: undefined,
+			};
+		default:
+			return state;
+	}
+};
 
 export const selectUser = (state: RootState): IUser | undefined => state.user.user;
 
-export default userSlice.reducer;
+export default userReducer;

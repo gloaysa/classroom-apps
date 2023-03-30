@@ -1,7 +1,7 @@
 import React, { FunctionComponent, useState } from 'react';
 import './user-list.component.scss';
-import { IUser } from '../../../common';
 import { BuzzerState } from '../buzzer/buzzer.component';
+import { IUser } from '../../../common/interfaces/user.interface';
 
 interface IUserListComponent {
 	players: IUser[];

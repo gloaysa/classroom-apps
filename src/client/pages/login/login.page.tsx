@@ -1,19 +1,20 @@
 import React, { useEffect, useState } from 'react';
 import { Avatar, Box, Button, Container, CssBaseline, TextField, Typography } from '@mui/material';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
-import { useDispatch } from 'react-redux';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { DashboardRoutes } from '../dashboard/dashboard.router';
 import { useUserHook } from '../../hooks/use-user.hook';
 import { useGetUserIdHook } from '../../hooks/use-get-user-id.hook';
 import { verifyUsernameUtil } from '../../../common/utils/verify-username.util';
+import { useAppDispatch } from '../../hooks/app-store.hook';
+import { UserActionTypes } from '../../../common/actions/user.actions';
 
 const LoginPage = () => {
 	const { userId, setUserId } = useGetUserIdHook();
 	const [redirectUrl, setRedirectUrl] = useState<string | null>(null);
 	const [username, setUsername] = useState('');
 	const [searchParams] = useSearchParams();
-	const dispatch = useDispatch();
+	const dispatch = useAppDispatch();
 	const navigate = useNavigate();
 	const { createUser } = useUserHook(dispatch);
 	const showError = username?.length >= 3 && !verifyUsernameUtil(username);
@@ -38,9 +39,9 @@ const LoginPage = () => {
 		const username = data.get('username');
 
 		if (username && typeof username === 'string') {
-			createUser(username).then((user) => {
-				if (user) {
-					setUserId(user.id);
+			createUser(username).then((action) => {
+				if (action.type === UserActionTypes.SetUser) {
+					setUserId(action.payload?.id);
 				}
 			});
 		}

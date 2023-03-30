@@ -1,4 +1,4 @@
-import { ClientMessagesTypes, IClientMessages } from '../interfaces/messages/client-messages.interface';
+import { ClientMessagesTypes, IClientMessages } from '../actions/main.actions';
 
 export class ClientMessage implements IClientMessages {
 	type: ClientMessagesTypes;

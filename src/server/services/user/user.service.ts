@@ -1,6 +1,6 @@
-import { IUser } from '../../../common';
 import { UserModel } from '../../models/user.model';
 import { v4 as uuidv4 } from 'uuid';
+import { IUser } from '../../../common/interfaces/user.interface';
 
 export class UserService {
 	private static instance: UserService;

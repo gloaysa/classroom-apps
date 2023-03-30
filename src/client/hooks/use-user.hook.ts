@@ -1,33 +1,37 @@
 import { useCallback, useState } from 'react';
-import { IUser } from '../../common';
 import { Dispatch } from '@reduxjs/toolkit';
-import { setUserAction } from '../store/reducers/user.reducer';
+import { IUser } from '../../common/interfaces/user.interface';
+import { UserActions } from '../../common/actions/user.actions';
+import { ClientMessagesTypes, MainActions, MainActionTypes } from '../../common/actions/main.actions';
+import { ErrorActions } from '../../common/actions/error.actions';
 
 export const useUserHook = (dispatch: Dispatch) => {
 	const [user, setUser] = useState<IUser | undefined>();
-	const [error, setError] = useState<string | undefined>();
 	const [loading, setLoading] = useState<boolean>(false);
+	const genericError: MainActions = {
+		type: MainActionTypes.SetMessage,
+		payload: {
+			type: ClientMessagesTypes.Error,
+			data: 'There was an error when getting the user',
+		},
+	};
 
-	const getUser = useCallback(async (userId: string): Promise<IUser | undefined> => {
+	const getUser = useCallback(async (userId: string): Promise<UserActions | MainActions | ErrorActions> => {
 		setLoading(true);
 		const response = await fetch(`${process.env.API_URL}/user/${userId}`).catch((e) => {
 			setLoading(false);
-			setError('User not found');
+			dispatch(genericError);
 			return e;
 		});
 
-		if (response.ok) {
-			const user = await response.json();
-			setUser(user);
-			setLoading(false);
-			setError(undefined);
-			dispatch(setUserAction(user));
-			return user;
-		}
-		setError('User not found');
+		const userAction: UserActions = await response.json();
+
+		setLoading(false);
+		dispatch(userAction);
+		return userAction;
 	}, []);
 
-	const createUser = useCallback(async (userName: string): Promise<IUser | undefined> => {
+	const createUser = useCallback(async (userName: string): Promise<UserActions | MainActions | ErrorActions> => {
 		setLoading(true);
 		const response = await fetch(`${process.env.API_URL}/user`, {
 			method: 'POST',
@@ -37,37 +41,32 @@ export const useUserHook = (dispatch: Dispatch) => {
 			body: JSON.stringify({ name: userName }),
 		}).catch((e) => {
 			setLoading(false);
-			setError('Could not create user');
+			dispatch(genericError);
 			return e;
 		});
-		if (response.ok) {
-			const user = await response.json();
-			setUser(user);
-			setLoading(false);
-			setError(undefined);
-			dispatch(setUserAction(user));
-			return user;
-		}
-		setError('User not found');
+
+		const userAction: UserActions = await response.json();
+		setLoading(false);
+		dispatch(userAction);
+		return userAction;
 	}, []);
 
-	const deleteUser = useCallback(async (userId: string): Promise<void> => {
+	const deleteUser = useCallback(async (userId: string): Promise<UserActions | MainActions | ErrorActions> => {
 		setLoading(true);
 		const response = await fetch(`${process.env.API_URL}/user/${userId}`, {
 			method: 'DELETE',
 		}).catch((e) => {
 			setLoading(false);
-			setError('User not found');
+			dispatch(genericError);
 			return e;
 		});
-		if (response.ok) {
-			setUser(undefined);
-			setLoading(false);
-			setError(undefined);
-			dispatch(setUserAction(undefined));
-		}
-		setError('User not found');
+		const userAction: UserActions = await response.json();
+
+		setUser(undefined);
+		setLoading(false);
+		dispatch(userAction);
+		return userAction;
 	}, []);
 
-	return { user, error, loading, getUser, createUser, deleteUser };
+	return { user, loading, getUser, createUser, deleteUser };
 };
