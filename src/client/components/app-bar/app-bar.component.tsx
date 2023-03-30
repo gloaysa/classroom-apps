@@ -10,13 +10,14 @@ import { Typography } from '@mui/material';
 interface IAppBar {
 	userName?: string;
 	onUserLogout: () => void;
+	onClickUsername: () => void;
 }
-const AppBarComponent: FunctionComponent<IAppBar> = ({ userName, onUserLogout }) => {
+const AppBarComponent: FunctionComponent<IAppBar> = ({ userName, onUserLogout, onClickUsername }) => {
 	return (
 		<Box sx={{ flexGrow: 1, marginBottom: '20px' }}>
 			<AppBar position="static">
 				<Toolbar>
-					<IconButton size="large" edge="start" color="inherit" aria-label="menu" sx={{ mr: 2 }}>
+					<IconButton onClick={onUserLogout} size="large" edge="start" color="inherit" aria-label="menu" sx={{ mr: 2 }}>
 						{userName}
 					</IconButton>
 					<Typography variant="h6" component="div" sx={{ flexGrow: 1, textAlign: 'center' }}></Typography>

@@ -60,6 +60,10 @@ const App: FunctionComponent = () => {
 		}
 	};
 
+	const handleOnClickUsername = () => {
+		navigate(DashboardRoutes.Dashboard);
+	};
+
 	const handleDismissNotification = (event: React.SyntheticEvent | Event, reason?: string) => {
 		if (reason === 'clickaway') {
 			return;
@@ -69,7 +73,7 @@ const App: FunctionComponent = () => {
 
 	return (
 		<Box component="main" maxWidth="l">
-			<AppBarComponent userName={currentUser?.name} onUserLogout={handleLogout} />
+			<AppBarComponent userName={currentUser?.name} onUserLogout={handleLogout} onClickUsername={handleOnClickUsername} />
 			<Snackbar
 				onClose={handleDismissNotification}
 				anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
