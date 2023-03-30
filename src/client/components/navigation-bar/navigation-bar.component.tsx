@@ -19,7 +19,7 @@ const NavigationBarComponent = () => {
 
 	return (
 		<Container sx={styles.navigation}>
-			<Button onClick={handleNavigateBack} aria-label="back" startIcon={<ArrowBackIosIcon />}>
+			<Button onClick={handleNavigateBack} size="large" aria-label="back" startIcon={<ArrowBackIosIcon />}>
 				Back
 			</Button>
 		</Container>
@@ -28,6 +28,9 @@ const NavigationBarComponent = () => {
 
 const styles: Record<string, SxProps> = {
 	navigation: {
+		posion: 'fixed',
+		top: 0,
+		bottom: 'auto',
 		display: 'flex',
 		justifyContent: 'flex-start',
 		padding: '5px',

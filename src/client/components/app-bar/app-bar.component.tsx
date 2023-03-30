@@ -48,7 +48,7 @@ const AppBarComponent: FunctionComponent<IAppBar> = ({ userName, onUserLogout, o
 	};
 
 	return (
-		<AppBar position="fixed" sx={{ top: 'auto', bottom: 0 }} color="transparent">
+		<AppBar position="fixed" sx={styles.appBar} color="transparent">
 			<Toolbar sx={styles.toolbar}>
 				<Box sx={styles.appBarLeft}></Box>
 				<Box sx={styles.appBarCenter}>
@@ -69,6 +69,11 @@ const AppBarComponent: FunctionComponent<IAppBar> = ({ userName, onUserLogout, o
 };
 
 const styles: Record<string, SxProps> = {
+	appBar: {
+		top: 'auto',
+		bottom: 0,
+		paddingBottom: '20px',
+	},
 	toolbar: {
 		display: 'flex',
 		justifyContent: 'space-between',
