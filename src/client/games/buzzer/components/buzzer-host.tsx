@@ -1,20 +1,18 @@
 import React, { FunctionComponent, useEffect, useState } from 'react';
 import { Box, Container, CssBaseline, FormControlLabel, Switch } from '@mui/material';
-import { useSelector } from 'react-redux';
 import UserListComponent from '../../../components/user-list/user-list.component';
-import { selectPlayers } from '../../../store/reducers/room.reducer';
-import { selectBuzzerOnOff } from '../../../store/reducers/buzzer.reducer';
 import { BuzzerGameActionTypes } from '../../../../common/actions/buzzer-game.actions';
 import { StoreActions } from '../../../../common/actions';
+import { IUser } from '../../../../common/interfaces/user.interface';
 
 interface IBuzzerHost {
 	sendMessage: (action: StoreActions) => void;
+	players: IUser[];
+	buzzerOn: boolean;
 }
 
-const BuzzerHost: FunctionComponent<IBuzzerHost> = ({ sendMessage }) => {
+const BuzzerHost: FunctionComponent<IBuzzerHost> = ({ sendMessage, players, buzzerOn }) => {
 	const [switchOn, setSwitchOn] = useState<boolean | undefined>();
-	const players = useSelector(selectPlayers);
-	const buzzerOn = useSelector(selectBuzzerOnOff);
 
 	useEffect(() => {
 		setSwitchOn(buzzerOn);

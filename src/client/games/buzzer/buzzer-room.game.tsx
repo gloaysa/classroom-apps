@@ -10,13 +10,16 @@ import { BuzzerGameActionTypes } from '../../../common/actions/buzzer-game.actio
 import { BuzzerRoutes } from './buzzer.router';
 import { ErrorActionTypes } from '../../../common/actions/error.actions';
 import { MainRoutes } from '../../index.router';
+import { selectPlayers } from '../../store/reducers/room.reducer';
+import { selectBuzzerOnOff } from '../../store/reducers/buzzer.reducer';
 
 const BuzzerRoomGame = () => {
 	const navigate = useNavigate();
 	const currentUser = useSelector(selectUser);
+	const players = useSelector(selectPlayers);
+	const buzzerOn = useSelector(selectBuzzerOnOff);
 	const { gameId } = useParams();
 	const { sendActionMessage, action } = useBuzzerSocketHook(currentUser, gameId);
-	const currentUserIsHost = (): boolean => !!currentUser?.hostingRooms.includes(gameId ?? '');
 
 	useEffect(() => {
 		if (currentUser) {
@@ -33,19 +36,25 @@ const BuzzerRoomGame = () => {
 		}
 	}, [action]);
 
-	if (!currentUser) {
+	if (!currentUser || !gameId || buzzerOn === undefined) {
 		return null;
 	}
 
+	const currentUserIsHost = (): boolean => !!currentUser?.hostingRooms.includes(gameId);
+
 	return (
 		<Container>
-			<Typography variant="h6" component="div" sx={{ flexGrow: 1, textAlign: 'center' }}>
+			<Typography variant="h3" sx={{ flexGrow: 1, textAlign: 'center' }}>
 				{gameId}
 			</Typography>
 			{currentUserIsHost() ? (
-				<BuzzerHost sendMessage={sendActionMessage} />
+				<BuzzerHost
+					sendMessage={sendActionMessage}
+					players={players.filter(({ hostingRooms }) => !hostingRooms.includes(gameId))}
+					buzzerOn={buzzerOn}
+				/>
 			) : (
-				<BuzzerPlayer player={currentUser} sendMessage={sendActionMessage} />
+				<BuzzerPlayer player={currentUser} sendMessage={sendActionMessage} buzzerOn={buzzerOn} />
 			)}
 		</Container>
 	);

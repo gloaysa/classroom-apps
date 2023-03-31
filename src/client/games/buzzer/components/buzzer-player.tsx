@@ -1,8 +1,6 @@
 import React, { FunctionComponent, useEffect, useState } from 'react';
 import { Box, Container, SxProps } from '@mui/material';
-import { useSelector } from 'react-redux';
 import BuzzerComponent, { BuzzerState } from '../../../components/buzzer/buzzer.component';
-import { selectBuzzerOnOff } from '../../../store/reducers/buzzer.reducer';
 import { IUser } from '../../../../common/interfaces/user.interface';
 import { BuzzerGameActionTypes } from '../../../../common/actions/buzzer-game.actions';
 import { StoreActions } from '../../../../common/actions';
@@ -10,11 +8,11 @@ import { StoreActions } from '../../../../common/actions';
 interface IBuzzerPlayer {
 	sendMessage: (action: StoreActions) => void;
 	player: IUser;
+	buzzerOn: boolean;
 }
 
-const BuzzerPlayer: FunctionComponent<IBuzzerPlayer> = ({ sendMessage, player }) => {
+const BuzzerPlayer: FunctionComponent<IBuzzerPlayer> = ({ sendMessage, player, buzzerOn }) => {
 	const [buzzerState, setBuzzerState] = useState<BuzzerState>();
-	const buzzerOn = useSelector(selectBuzzerOnOff);
 
 	useEffect(() => {
 		const userHasBuzzed = !!player.updatedAt;
@@ -24,9 +22,6 @@ const BuzzerPlayer: FunctionComponent<IBuzzerPlayer> = ({ sendMessage, player })
 		buzzerOn ? setBuzzerState('ready') : setBuzzerState('waiting');
 	}, [buzzerOn, player.updatedAt]);
 
-	if (buzzerOn === undefined) {
-		return null;
-	}
 	const handleClickBuzzer = () => {
 		if (buzzerOn && buzzerState !== 'buzzed') {
 			setBuzzerState('buzzed');
