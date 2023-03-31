@@ -7,7 +7,7 @@ import ShortUniqueId from 'short-unique-id';
 import { BuzzerService } from '../../services/games/buzzer.service';
 import { StoreActions } from '../../../common/actions';
 import { BuzzerGameActions } from '../../../common/actions/buzzer-game.actions';
-import { RoomActionTypes } from '../../../common/actions/room.actions';
+import { RoomActions, RoomActionTypes } from '../../../common/actions/room.actions';
 import { ClientMessagesTypes, MainActions, MainActionTypes } from '../../../common/actions/main.actions';
 import { UserActions, UserActionTypes } from '../../../common/actions/user.actions';
 import { ErrorActions, ErrorActionTypes } from '../../../common/actions/error.actions';
@@ -32,7 +32,7 @@ export const roomRoute = (expressWs: express_ws.Instance) => {
 					type: MainActionTypes.SetMessage,
 					payload: { type: ClientMessagesTypes.Error, data: 'Need a logged in user to create rooms' },
 				};
-				return res.status(403).send(message);
+				return res.status(403).send([message]);
 			}
 
 			const user: IUser | undefined = userService.getUserById(userId);
@@ -42,12 +42,9 @@ export const roomRoute = (expressWs: express_ws.Instance) => {
 					type: ErrorActionTypes.UserDoesNotExist,
 					payload: `No user found with id ${userId}`,
 				};
-				return res.status(403).send(message);
+				return res.status(403).send([message]);
 			}
 
-			// Since the user is creating the room, becomes the host
-			user.makeHost(true);
-			user.roomId = roomId;
 			const room = roomService.createRoom(roomId, user);
 
 			if (!room) {
@@ -55,12 +52,13 @@ export const roomRoute = (expressWs: express_ws.Instance) => {
 					type: ErrorActionTypes.RoomDoesNotExist,
 					payload: `Could not create room with id ${roomId}`,
 				};
-				return res.send(message);
+				return res.send([message]);
 			}
 
-			const successMessage: UserActions = { type: UserActionTypes.SetUser, payload: user };
+			const userMessage: UserActions = { type: UserActionTypes.SetUser, payload: user };
+			const roomMessage: RoomActions = { type: RoomActionTypes.CreateRoom, payload: roomId };
 			console.info(`New room ${roomId} for user ${user.name} - ${user.id}`);
-			return res.send(successMessage);
+			res.send([userMessage, roomMessage]);
 		} catch (e) {
 			console.error(`It was not possible to create new room`);
 		}
@@ -73,11 +71,16 @@ export const roomRoute = (expressWs: express_ws.Instance) => {
 			const { user, room } = handleMissingUserOrRoom(userId, roomId);
 
 			user.connected = true;
-			user.addRoom(client);
-			room.addUser(user);
-			user.roomId = roomId;
+			room.addUser(user, client);
 
 			room.broadcastToHost({ type: RoomActionTypes.SetPlayers, payload: room.getUsers() });
+			room.broadcastToHost({
+				type: MainActionTypes.SetMessage,
+				payload: {
+					type: ClientMessagesTypes.Info,
+					data: `User ${user.name} joined the room`,
+				},
+			});
 
 			const clientMessage = new MessageModel({
 				type: MainActionTypes.SetMessage,
@@ -103,7 +106,7 @@ export const roomRoute = (expressWs: express_ws.Instance) => {
 				const message: StoreActions = JSON.parse(msg as unknown as string);
 				console.info(`Message received from ${user.name} - ${user.id}: ${msg}`);
 
-				buzzerGame.handlePlayerMessages(user, room, message as BuzzerGameActions);
+				buzzerGame.handlePlayerMessages(user, room, client, message as BuzzerGameActions);
 			} catch (e) {
 				console.error(e);
 				client.send(JSON.stringify(e));
@@ -123,14 +126,36 @@ export const roomRoute = (expressWs: express_ws.Instance) => {
 				user.connected = false;
 
 				if (room) {
-					room.broadcastToHost({ type: RoomActionTypes.SetPlayers, payload: room.getUsers() });
+					if (user.isHost(room.id)) {
+						room.broadcastToPlayers({
+							type: MainActionTypes.SetMessage,
+							payload: {
+								type: ClientMessagesTypes.Info,
+								data: `Host left room ${roomId}, you are being disconnected`,
+							},
+						});
+					} else {
+						room.broadcastToHost({ type: RoomActionTypes.SetPlayers, payload: room.getUsers() });
+
+						room.broadcastToHost({
+							type: MainActionTypes.SetMessage,
+							payload: {
+								type: ClientMessagesTypes.Info,
+								data: `User ${user.name} left the room`,
+							},
+						});
+					}
 				}
 				const clientMessage = new MessageModel({ type: UserActionTypes.RemoveUser, payload: undefined });
 				client.send(clientMessage.toString());
+				console.info(`User ${user.name} - ${user.id} disconnected`);
 			} catch (e) {
 				const errorMessage: MainActions = {
 					type: MainActionTypes.SetMessage,
-					payload: { type: ClientMessagesTypes.Error, data: `There was an error disconnecting user ${userId}` },
+					payload: {
+						type: ClientMessagesTypes.Error,
+						data: `There was an error disconnecting user ${userId}`,
+					},
 				};
 				console.error(errorMessage);
 			}

@@ -7,7 +7,7 @@ import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { useGameHook } from '../../hooks/use-game.hook';
 import BuzzerGameSelector from './components/buzzer-game-selector';
 import { useAppDispatch } from '../../hooks/app-store.hook';
-import { UserActionTypes } from '../../../common/actions/user.actions';
+import { RoomActionTypes } from '../../../common/actions/room.actions';
 
 const BuzzerLobbyGame = () => {
 	const navigate = useNavigate();
@@ -17,15 +17,20 @@ const BuzzerLobbyGame = () => {
 	const currentPath = useLocation().pathname;
 	const currentPageIsLobby = currentPath.match(`${BuzzerRoutes.Lobby}$`);
 
+	if (!currentUser) {
+		return null;
+	}
+
 	const handleJoinGame = (code: string) => {
 		navigate(`${BuzzerRoutes.Lobby}/${code}`);
 	};
 
 	const handleCreateGame = () => {
 		if (currentUser) {
-			createGame(currentUser).then((action) => {
-				if (action.type === UserActionTypes.SetUser) {
-					navigate(`${BuzzerRoutes.Lobby}/${action.payload.roomId}`);
+			createGame(currentUser).then((actions) => {
+				const createRoomAction = actions.find(({ type }) => type === RoomActionTypes.CreateRoom);
+				if (createRoomAction) {
+					navigate(`${BuzzerRoutes.Lobby}/${createRoomAction.payload}`);
 				}
 			});
 		}
@@ -35,7 +40,13 @@ const BuzzerLobbyGame = () => {
 		<Container>
 			<CssBaseline />
 
-			{currentPageIsLobby ? <BuzzerGameSelector onCreateGame={handleCreateGame} onJoinGame={handleJoinGame} /> : null}
+			{currentPageIsLobby ? (
+				<BuzzerGameSelector
+					currentUser={currentUser}
+					onCreateGame={handleCreateGame}
+					onJoinGame={handleJoinGame}
+				/>
+			) : null}
 
 			<Outlet />
 		</Container>

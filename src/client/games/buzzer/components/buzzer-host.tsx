@@ -12,13 +12,17 @@ interface IBuzzerHost {
 }
 
 const BuzzerHost: FunctionComponent<IBuzzerHost> = ({ sendMessage }) => {
-	const [switchOn, setSwitchOn] = useState(false);
+	const [switchOn, setSwitchOn] = useState<boolean | undefined>();
 	const players = useSelector(selectPlayers);
 	const buzzerOn = useSelector(selectBuzzerOnOff);
 
 	useEffect(() => {
 		setSwitchOn(buzzerOn);
 	}, [buzzerOn]);
+
+	if (switchOn === undefined || buzzerOn === undefined) {
+		return null;
+	}
 
 	const handleBuzzerSwitch = (event: React.ChangeEvent<HTMLInputElement>) => {
 		sendMessage({ type: BuzzerGameActionTypes.SetBuzzerOnOff, payload: event.target.checked });
@@ -37,7 +41,7 @@ const BuzzerHost: FunctionComponent<IBuzzerHost> = ({ sendMessage }) => {
 				<UserListComponent
 					players={players.filter((player) => player.connected)}
 					buzzerOn={buzzerOn}
-					showStar={buzzerOn}
+					showColorStatus={buzzerOn}
 					listName="Connected players"
 				/>
 			</Box>

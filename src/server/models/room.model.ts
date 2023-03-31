@@ -1,56 +1,47 @@
 import { StoreActions } from '../../common/actions';
 import { IRoom } from '../../common/interfaces/room.interface';
 import { IUser } from '../../common/interfaces/user.interface';
+import ws from 'ws';
 
 export class RoomModel implements IRoom {
-	users: IUser[] = [];
+	users: Record<string, { user: IUser; client: ws.WebSocket }> = {};
 	id: string;
 
-	host: IUser;
-
+	host: { user: IUser; client?: ws.WebSocket };
 	constructor(id: string, host: IUser) {
 		this.id = id;
-		this.host = host;
+		host.makeHost(id);
+		this.host = { user: host };
 	}
 
 	getUsers(): IUser[] {
-		return this.users.sort(this.sortByDate);
+		return Object.values(this.users)
+			.map(({ user }) => user)
+			.sort(this.sortByDate);
 	}
 
-	addUser(user: IUser): void {
-		const userAlreadyJoined = this.users.find(({ id }) => user.id === id);
-		if (userAlreadyJoined || user.isHost) {
-			return;
+	addUser(user: IUser, client: ws.WebSocket): void {
+		if (user.id === this.host.user.id) {
+			this.host.client = client;
 		}
-		this.users.push(user);
+		this.users[user.id] = {
+			user,
+			client,
+		};
+		user.addRoom(this.id);
 	}
 
 	removeUser(user: IUser): void {
-		this.users = this.users.filter(({ id }) => id !== user.id);
+		delete this.users[user.id];
+		user.removeRoom(this.id);
 	}
 
 	broadcastToPlayers(message: StoreActions) {
-		this.users.forEach((user) => {
-			user.room?.send(
-				JSON.stringify(message, (key, value) => {
-					if (key === 'room') {
-						return undefined;
-					}
-					return value;
-				})
-			);
-		});
+		Object.values(this.users).forEach(({ client }) => client.send(JSON.stringify(message)));
 	}
 
 	broadcastToHost(message: StoreActions) {
-		this.host.room?.send(
-			JSON.stringify(message, (key, value) => {
-				if (key === 'room') {
-					return undefined;
-				}
-				return value;
-			})
-		);
+		this.host.client?.send(JSON.stringify(message));
 	}
 
 	sortByDate(first: IUser, second: IUser) {

@@ -1,26 +1,37 @@
-import ws from 'ws';
 import { IUser } from '../../common/interfaces/user.interface';
 
 export class UserModel implements IUser {
 	readonly id: string;
 	readonly name: string;
-	room: ws.WebSocket | undefined;
 	connected = false;
-	isHost = false;
+	hostingRooms: string[];
 	updatedAt: string | undefined;
-	roomId: string | undefined;
+	roomIds: string[];
 
 	constructor(id: string, name: string) {
 		this.id = id;
 		this.name = name;
+		this.hostingRooms = [];
+		this.roomIds = [];
 	}
 
-	makeHost(isHost: boolean) {
-		this.isHost = isHost;
+	makeHost(roomId: string) {
+		this.hostingRooms.push(roomId);
+		this.roomIds.push(roomId);
 	}
 
-	addRoom(room: ws.WebSocket) {
-		this.room = room;
+	addRoom(roomId: string) {
+		if (!this.roomIds.includes(roomId)) {
+			this.roomIds.push(roomId);
+		}
+	}
+
+	isHost(roomId: string): boolean {
+		return this.hostingRooms.includes(roomId);
+	}
+
+	removeRoom(roomId: string) {
+		this.roomIds = this.roomIds.filter((id) => id !== roomId);
 	}
 
 	updateUser(updatedAt: string | undefined) {

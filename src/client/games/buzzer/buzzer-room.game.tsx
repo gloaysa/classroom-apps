@@ -16,6 +16,7 @@ const BuzzerRoomGame = () => {
 	const currentUser = useSelector(selectUser);
 	const { gameId } = useParams();
 	const { sendActionMessage, action } = useBuzzerSocketHook(currentUser, gameId);
+	const currentUserIsHost = (): boolean => !!currentUser?.hostingRooms.includes(gameId ?? '');
 
 	useEffect(() => {
 		if (currentUser) {
@@ -41,7 +42,11 @@ const BuzzerRoomGame = () => {
 			<Typography variant="h6" component="div" sx={{ flexGrow: 1, textAlign: 'center' }}>
 				{gameId}
 			</Typography>
-			{currentUser.isHost ? <BuzzerHost sendMessage={sendActionMessage} /> : <BuzzerPlayer player={currentUser} sendMessage={sendActionMessage} />}
+			{currentUserIsHost() ? (
+				<BuzzerHost sendMessage={sendActionMessage} />
+			) : (
+				<BuzzerPlayer player={currentUser} sendMessage={sendActionMessage} />
+			)}
 		</Container>
 	);
 };

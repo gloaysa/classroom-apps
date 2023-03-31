@@ -9,23 +9,26 @@ import { UserActions } from '../../common/actions/user.actions';
 export const useGameHook = (dispatch: Dispatch) => {
 	const [loading, setLoading] = useState<boolean>(false);
 
-	const createGame = useCallback(async (user: IUser): Promise<UserActions | RoomActions | ErrorActions | MainActions> => {
-		setLoading(true);
-		const response = await fetch(`${process.env.API_URL}/room`, {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json',
-				'x-user-id': user.id,
-			},
-		}).catch((e) => {
+	const createGame = useCallback(
+		async (user: IUser): Promise<Array<UserActions | RoomActions | ErrorActions | MainActions>> => {
+			setLoading(true);
+			const response = await fetch(`${process.env.API_URL}/room`, {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+					'x-user-id': user.id,
+				},
+			}).catch((e) => {
+				setLoading(false);
+				return e;
+			});
+			const actions: Array<RoomActions | ErrorActions | MainActions> = await response.json();
 			setLoading(false);
-			return e;
-		});
-		const action: RoomActions | ErrorActions | MainActions = await response.json();
-		setLoading(false);
-		dispatch(action);
-		return action;
-	}, []);
+			actions.forEach((action) => dispatch(action));
+			return actions;
+		},
+		[]
+	);
 
 	return { loading, createGame };
 };

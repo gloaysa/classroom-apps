@@ -13,22 +13,20 @@ interface IBuzzerPlayer {
 }
 
 const BuzzerPlayer: FunctionComponent<IBuzzerPlayer> = ({ sendMessage, player }) => {
-	const [buzzerState, setBuzzerState] = useState<BuzzerState>('waiting');
+	const [buzzerState, setBuzzerState] = useState<BuzzerState>();
 	const buzzerOn = useSelector(selectBuzzerOnOff);
 
 	useEffect(() => {
 		const userHasBuzzed = !!player.updatedAt;
-		if (buzzerOn) {
-			setBuzzerState('ready');
-		}
 		if (userHasBuzzed && buzzerOn) {
-			setBuzzerState('buzzed');
+			return setBuzzerState('buzzed');
 		}
-		if (!buzzerOn) {
-			setBuzzerState('waiting');
-		}
+		buzzerOn ? setBuzzerState('ready') : setBuzzerState('waiting');
 	}, [buzzerOn, player.updatedAt]);
 
+	if (buzzerOn === undefined) {
+		return null;
+	}
 	const handleClickBuzzer = () => {
 		if (buzzerOn && buzzerState !== 'buzzed') {
 			setBuzzerState('buzzed');

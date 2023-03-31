@@ -3,12 +3,12 @@ import { BuzzerGameActions, BuzzerGameActionTypes } from '../../../common/action
 
 // Define a type for the slice state
 interface BuzzerGameState {
-	buzzerOn: boolean;
+	buzzerOn: boolean | undefined;
 }
 
 // Define the initial state using that type
 const initialState: BuzzerGameState = {
-	buzzerOn: false,
+	buzzerOn: undefined,
 };
 
 const buzzerGameReducer = (state = initialState, action: BuzzerGameActions): BuzzerGameState => {
@@ -23,6 +23,6 @@ const buzzerGameReducer = (state = initialState, action: BuzzerGameActions): Buz
 	}
 };
 
-export const selectBuzzerOnOff = (state: RootState): boolean => state.buzzerGame.buzzerOn;
+export const selectBuzzerOnOff = (state: RootState): boolean | undefined => state.buzzerGame.buzzerOn;
 
 export default buzzerGameReducer;

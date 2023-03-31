@@ -1,16 +1,15 @@
-import ws from 'ws';
-
 export interface IUser {
 	id: string;
 	name: string;
-	isHost: boolean;
-	room: ws.WebSocket | undefined;
+	hostingRooms: string[];
+	roomIds: string[];
 	connected: boolean;
 	updatedAt: string | undefined;
 
-	makeHost: (isHost: boolean) => void;
-	addRoom: (room: ws.WebSocket) => void;
-	roomId: string | undefined;
+	makeHost: (roomId: string) => void;
+	addRoom: (roomId: string) => void;
+	removeRoom: (roomId: string) => void;
+	isHost: (roomId: string) => boolean;
 
 	updateUser: (updatedAt: string | undefined) => void;
 }

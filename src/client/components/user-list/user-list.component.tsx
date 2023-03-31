@@ -7,16 +7,19 @@ import StarIcon from '@mui/icons-material/Star';
 interface IUserListComponent {
 	players: IUser[];
 	listName: string;
-	showStar?: boolean;
+	showColorStatus?: boolean;
 	buzzerOn: boolean;
 }
 const UserListComponent: FunctionComponent<IUserListComponent> = ({
 	players,
 	buzzerOn,
 	listName,
-	showStar,
+	showColorStatus,
 }) => {
 	const getListItemColor = (player: IUser) => {
+		if (!showColorStatus) {
+			return 'transparent';
+		}
 		const userHasBuzzed = !!player.updatedAt;
 		if (userHasBuzzed && buzzerOn) {
 			return 'transparent';
@@ -48,17 +51,17 @@ const UserListComponent: FunctionComponent<IUserListComponent> = ({
 		if (!userHasBuzzed) {
 			return false;
 		}
-		return !!showStar && position < 3;
+		return !!showColorStatus && position < 3;
 	};
 	const shouldIndent = (userHasBuzzed: boolean, position: number): boolean => {
-		if (!showStar) {
+		if (!showColorStatus) {
 			return false;
 		}
 		return !shouldDisplayStar(userHasBuzzed, position);
 	};
 
 	return (
-		<List sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }} aria-label="contacts">
+		<List sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }} aria-label="players">
 			<ListItemText primary={listName} />
 			{players.map((player, index) => {
 				return (

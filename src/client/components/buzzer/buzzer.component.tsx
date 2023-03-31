@@ -5,10 +5,14 @@ export type BuzzerState = 'waiting' | 'ready' | 'buzzed';
 
 interface IBuzzerComponent {
 	onClick: () => void;
-	state: BuzzerState;
+	state: BuzzerState | undefined;
 }
 
 const BuzzerComponent: FunctionComponent<IBuzzerComponent> = ({ onClick, state }) => {
+	if (!state) {
+		return null;
+	}
+
 	const colors = {
 		waiting: 'grey',
 		ready: 'green',

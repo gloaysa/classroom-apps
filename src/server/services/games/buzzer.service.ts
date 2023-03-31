@@ -3,6 +3,7 @@ import { BuzzerGameActions, BuzzerGameActionTypes } from '../../../common/action
 import { IUser } from '../../../common/interfaces/user.interface';
 import { RoomActionTypes } from '../../../common/actions/room.actions';
 import { MessageModel } from '../../models/message.model';
+import ws from 'ws';
 
 export class BuzzerService {
 	private static instance: BuzzerService;
@@ -23,7 +24,7 @@ export class BuzzerService {
 		this.buzzersAreOpen = state;
 	}
 
-	handlePlayerMessages(user: IUser, room: IRoom, action: BuzzerGameActions) {
+	handlePlayerMessages(user: IUser, room: IRoom, client: ws.WebSocket, action: BuzzerGameActions) {
 		switch (action.type) {
 			case BuzzerGameActionTypes.SetBuzzerOnOff:
 				this.setBuzzers(room, action.payload);
@@ -36,7 +37,7 @@ export class BuzzerService {
 				room.broadcastToHost({ type: RoomActionTypes.SetPlayers, payload: room.getUsers() });
 				break;
 			case BuzzerGameActionTypes.BuzzerUserJoined:
-				user.room?.send(
+				client.send(
 					new MessageModel({
 						type: BuzzerGameActionTypes.SetBuzzerOnOff,
 						payload: this.buzzersAreOpen,
