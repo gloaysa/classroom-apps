@@ -4,11 +4,13 @@ import { IClientMessages, MainActions, MainActionTypes } from '../../../common/a
 // Define a type for the slice state
 interface MainState {
 	lastMessage: IClientMessages | undefined;
+	loading: boolean;
 }
 
 // Define the initial state using that type
 const initialState: MainState = {
 	lastMessage: undefined,
+	loading: false,
 };
 
 const userReducer = (state = initialState, action: MainActions): MainState => {
@@ -24,5 +26,6 @@ const userReducer = (state = initialState, action: MainActions): MainState => {
 };
 
 export const selectLastMessage = (state: RootState): IClientMessages | undefined => state.main.lastMessage;
+export const selectIsLoading = (state: RootState): boolean => state.main.loading;
 
 export default userReducer;

@@ -11,6 +11,7 @@ export interface IClientMessages {
 
 export enum MainActionTypes {
 	SetMessage = '[main] set message',
+	SetLoading = '[main] set loading',
 }
 
 export type setMessageAction = {
@@ -18,4 +19,13 @@ export type setMessageAction = {
 	payload: IClientMessages | undefined;
 };
 
-export type MainActions = setMessageAction;
+export type LoadingAction = {
+	type: MainActionTypes.SetLoading;
+	payload: boolean;
+};
+
+export type MainActions = setMessageAction | LoadingAction;
+
+export const setLoadingAction = (payload: boolean) => {
+	return { type: MainActionTypes.SetLoading, payload };
+};

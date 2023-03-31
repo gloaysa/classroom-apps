@@ -12,6 +12,7 @@ import { selectLastMessage } from './store/reducers/main.reducer';
 import { useAppDispatch } from './hooks/app-store.hook';
 import { ClientMessagesTypes, MainActions, MainActionTypes } from '../common/actions/main.actions';
 import NavigationBarComponent from './components/navigation-bar/navigation-bar.component';
+import SpinnerComponent from './components/spinner/spinner.component';
 
 const App: FunctionComponent = () => {
 	const dispatch = useAppDispatch();
@@ -74,6 +75,7 @@ const App: FunctionComponent = () => {
 
 	return (
 		<Box component="main" maxWidth="l">
+			<SpinnerComponent />
 			<Snackbar
 				onClose={handleDismissNotification}
 				anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
@@ -88,7 +90,11 @@ const App: FunctionComponent = () => {
 			<Box sx={styles.app}>
 				<Outlet />
 			</Box>
-			<AppBarComponent userName={currentUser?.name} onUserLogout={handleLogout} onClickUsername={handleOnClickUsername} />
+			<AppBarComponent
+				userName={currentUser?.name}
+				onUserLogout={handleLogout}
+				onClickUsername={handleOnClickUsername}
+			/>
 		</Box>
 	);
 };

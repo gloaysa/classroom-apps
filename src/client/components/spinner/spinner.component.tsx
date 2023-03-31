@@ -1,12 +1,15 @@
 import React, { FunctionComponent } from 'react';
-import './spinner.component.scss';
-import { ImSpinner3 } from 'react-icons/im';
+import { Backdrop, CircularProgress } from '@mui/material';
+import { useSelector } from 'react-redux';
+import { selectIsLoading } from '../../store/reducers/main.reducer';
 
 const SpinnerComponent: FunctionComponent = () => {
+	const isLoading = useSelector(selectIsLoading);
+
 	return (
-		<div className="spinner">
-			<ImSpinner3 className="spinner__icon" />
-		</div>
+		<Backdrop sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }} open={isLoading}>
+			<CircularProgress color="inherit" />
+		</Backdrop>
 	);
 };
 
