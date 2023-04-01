@@ -3,7 +3,7 @@ import { selectUser } from './store/reducers/user.reducer';
 import { createSearchParams, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { MainRoutes } from './index.router';
 import { DashboardRoutes } from './pages/dashboard/dashboard.router';
-import { Alert, Box, Snackbar } from '@mui/material';
+import { Box } from '@mui/material';
 import { useGetUserIdHook } from './hooks/use-get-user-id.hook';
 import { useUserHook } from './hooks/use-user.hook';
 import { useSelector } from 'react-redux';
@@ -13,13 +13,14 @@ import { useAppDispatch } from './hooks/app-store.hook';
 import { ClientMessagesTypes, MainActions, MainActionTypes } from '../common/actions/main.actions';
 import NavigationBarComponent from './components/navigation-bar/navigation-bar.component';
 import SpinnerComponent from './components/spinner/spinner.component';
+import AlertComponent from './components/alert/alert.component';
 
 const App: FunctionComponent = () => {
 	const dispatch = useAppDispatch();
 	const { userId, setUserId } = useGetUserIdHook();
 	const { getUser, deleteUser } = useUserHook(dispatch);
 	const currentUser = useSelector(selectUser);
-	const lastError = useSelector(selectLastMessage);
+	const notificationMessage = useSelector(selectLastMessage);
 	const currentPath = useLocation().pathname;
 	const navigate = useNavigate();
 
@@ -66,28 +67,16 @@ const App: FunctionComponent = () => {
 		navigate(DashboardRoutes.Dashboard);
 	};
 
-	const handleDismissNotification = (event: React.SyntheticEvent | Event, reason?: string) => {
-		if (reason === 'clickaway') {
-			return;
-		}
+	const handleDismissNotification = () => {
 		dispatch({ type: MainActionTypes.SetMessage });
 	};
 
 	return (
 		<Box component="main" maxWidth="l">
 			<SpinnerComponent />
-			<Snackbar
-				onClose={handleDismissNotification}
-				anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
-				open={!!lastError}
-				autoHideDuration={3000}
-			>
-				<Alert onClose={handleDismissNotification} severity={lastError?.type}>
-					{lastError?.data}
-				</Alert>
-			</Snackbar>
 			<NavigationBarComponent />
 			<Box sx={styles.app}>
+				<AlertComponent message={notificationMessage} handleDismissNotification={handleDismissNotification} />
 				<Outlet />
 			</Box>
 			<AppBarComponent
