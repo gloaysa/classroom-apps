@@ -11,7 +11,7 @@
 		"client": "webpack-dev-server --mode development --devtool inline-source-map --hot",
 		"server-dev": "nodemon",
 		"prepare": "husky install",
-		"generate-icons": "pwa-asset-generator public/icons/logo.png public/icons -m public/manifest.json -i public/index.html -f"
+		"generate-icons": "pwa-asset-generator assets/icons/logo.png assets/icons -v icons -m public/manifest.json -i public/index.html -f"
 	},
 	"author": "Guillermo Loaysa",
 	"license": "ISC",

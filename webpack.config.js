@@ -6,7 +6,7 @@ const CopyPlugin = require('copy-webpack-plugin');
 const dotenv = require('dotenv');
 const webpack = require('webpack');
 
-const outputDirectory = 'dist';
+const outputDirectory = 'dist/public';
 
 const env = dotenv.config().parsed;
 
@@ -17,12 +17,14 @@ const envKeys = Object.keys(env).reduce((prev, next) => {
 
 module.exports = {
 	entry: ['babel-polyfill', './src/client/index.tsx'],
+	performance: {
+		assetFilter: (assetFilename) => assetFilename.endsWith('.png'),
+	},
 	output: {
 		path: path.join(__dirname, outputDirectory),
-		filename: './js/[name].bundle.js',
+		filename: `js/[name].bundle.js`,
 		publicPath: '/',
 	},
-	devtool: 'source-map',
 	module: {
 		rules: [
 			{
@@ -64,14 +66,15 @@ module.exports = {
 		},
 	},
 	plugins: [
-		new CleanWebpackPlugin({}),
+		new CleanWebpackPlugin(),
+		new MiniCssExtractPlugin({
+			filename: `css/[name].min.css`,
+		}),
 		new HtmlWebpackPlugin({
 			template: './public/index.html',
 		}),
 		new webpack.DefinePlugin(envKeys),
-		new MiniCssExtractPlugin(),
-		new CopyPlugin({ patterns: [{ from: './src/client/assets', to: 'assets' }] }),
-		new CopyPlugin({ patterns: [{ from: './public', to: 'public' }] }),
-		new CopyPlugin({ patterns: [{ from: './public/manifest.json', to: 'manifest.json' }] }),
+		new CopyPlugin({ patterns: [{ from: 'assets', to: '../assets' }] }),
+		new CopyPlugin({ patterns: [{ from: 'public/manifest.json', to: 'manifest.json' }] }),
 	],
 };
