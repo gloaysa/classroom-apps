@@ -4,6 +4,7 @@ import { IUser } from '../../../common/interfaces/user.interface';
 import { RoomActionTypes } from '../../../common/actions/room.actions';
 import { MessageModel } from '../../models/message.model';
 import ws from 'ws';
+import { BuzzerGameModel } from '../../models/buzzer.game.model';
 
 export class BuzzerService {
 	private static instance: BuzzerService;
@@ -15,13 +16,17 @@ export class BuzzerService {
 		}
 		return this.instance;
 	}
-	private buzzersAreOpen = false;
+	games: Record<string, BuzzerGameModel> = {};
 
-	private setBuzzers(room: IRoom, state: boolean) {
+	private setBuzzers(room: IRoom, buzzerSstate: boolean) {
 		room.getUsers().forEach((user) => {
 			user.updateUser(undefined);
 		});
-		this.buzzersAreOpen = state;
+		this.games[room.id].buzzerOn = buzzerSstate;
+	}
+
+	createGame(roomId: string) {
+		this.games[roomId] = new BuzzerGameModel(roomId);
 	}
 
 	handlePlayerMessages(user: IUser, room: IRoom, client: ws.WebSocket, action: BuzzerGameActions) {
@@ -32,7 +37,7 @@ export class BuzzerService {
 				room.broadcastToHost({ type: BuzzerGameActionTypes.SetBuzzerOnOff, payload: action.payload });
 				room.broadcastToHost({ type: RoomActionTypes.SetPlayers, payload: room.getUsers() });
 				break;
-			case BuzzerGameActionTypes.BuzzerBuzzed:
+			case BuzzerGameActionTypes.UserBuzzed:
 				user.updateUser(new Date().toISOString());
 				room.broadcastToHost({ type: RoomActionTypes.SetPlayers, payload: room.getUsers() });
 				break;
@@ -40,7 +45,7 @@ export class BuzzerService {
 				client.send(
 					new MessageModel({
 						type: BuzzerGameActionTypes.SetBuzzerOnOff,
-						payload: this.buzzersAreOpen,
+						payload: this.games[room.id].buzzerOn,
 					}).toString()
 				);
 				break;

@@ -25,7 +25,7 @@ const BuzzerPlayer: FunctionComponent<IBuzzerPlayer> = ({ sendMessage, player, b
 	const handleClickBuzzer = () => {
 		if (buzzerOn && buzzerState !== 'buzzed') {
 			setBuzzerState('buzzed');
-			sendMessage({ type: BuzzerGameActionTypes.BuzzerBuzzed, payload: new Date().toISOString() });
+			sendMessage({ type: BuzzerGameActionTypes.UserBuzzed, payload: new Date().toISOString() });
 		}
 	};
 

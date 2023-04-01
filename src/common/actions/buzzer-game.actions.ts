@@ -3,7 +3,7 @@ import { IUser } from '../interfaces/user.interface';
 export enum BuzzerGameActionTypes {
 	SetBuzzerOnOff = '[buzzer game] set buzzer on off',
 	BuzzerUserJoined = '[buzzer game] user joined',
-	BuzzerBuzzed = '[buzzer game] user buzzed',
+	UserBuzzed = '[buzzer game] user buzzed',
 }
 
 export type setBuzzerOnOff = {
@@ -17,7 +17,7 @@ export type buzzerUserJoined = {
 };
 
 export type buzzerUserBuzzed = {
-	type: BuzzerGameActionTypes.BuzzerBuzzed;
+	type: BuzzerGameActionTypes.UserBuzzed;
 	payload: string;
 };
 

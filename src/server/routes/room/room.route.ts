@@ -18,7 +18,7 @@ const userService = UserService.getInstance();
 const uniqueIdGenerator = new ShortUniqueId({ length: 4 });
 
 // GAMES
-const buzzerGame = BuzzerService.getInstance();
+const buzzerService = BuzzerService.getInstance();
 
 export const roomRoute = (expressWs: express_ws.Instance) => {
 	const { app } = expressWs;
@@ -46,6 +46,9 @@ export const roomRoute = (expressWs: express_ws.Instance) => {
 			}
 
 			const room = roomService.createRoom(roomId, user);
+
+			// TODO: When adding more games, do not create BuzzerGame by default
+			buzzerService.createGame(roomId);
 
 			if (!room) {
 				const message: ErrorActions = {
@@ -106,7 +109,8 @@ export const roomRoute = (expressWs: express_ws.Instance) => {
 				const message: StoreActions = JSON.parse(msg as unknown as string);
 				console.info(`Message received from ${user.name} - ${user.id}: ${msg}`);
 
-				buzzerGame.handlePlayerMessages(user, room, client, message as BuzzerGameActions);
+				// TODO: When adding more games, don't call all services to see which one picks up the message
+				buzzerService.handlePlayerMessages(user, room, client, message as BuzzerGameActions);
 			} catch (e) {
 				console.error(e);
 				client.send(JSON.stringify(e));
